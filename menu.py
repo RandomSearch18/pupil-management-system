@@ -37,7 +37,24 @@ def get_selection(max: int) -> int | None:
     return selection
 
 
-class Option:
+class MenuItem:
+
+    def __init__(self,
+                 label: str,
+                 should_show: Optional[Callable[[], bool]] = None):
+        """A menu item is a single action that the user can select from a menu.
+        label: The line of text that will be shown in the menu to represent the option
+        should_show: An optional function that can return False to prevent the item from being included in the menu.
+                     Useful for items that only make sense at certain times, e.g. to only show "Log out" if a user is logged in.
+        """
+        self.label = label
+        self.should_show = should_show
+
+    def execute(self):
+        pass
+
+
+class Option(MenuItem):
 
     def __init__(self,
                  label: str,
@@ -46,18 +63,41 @@ class Option:
         """Create a menu item that can be added to menu.
         name: The text that is shown to the user, in the menu
         callback: The function to run when the user selects the option
-        should_show: An optional function that can return False to prevent the option from being shown
         """
-        self.label = label
+        super().__init__(label, should_show)
         self.callback = callback
+
+    def execute(self):
+        try:
+            self.callback()
+        except KeyboardInterrupt:
+            print(color_wrap("\n" + "Aborted", COLOR_RED))
+
+
+class Submenu(MenuItem):
+
+    def execute(self):
+        menu = Menu(self.options)
+        menu.show()
+
+    def __init__(self,
+                 label: str,
+                 title: str,
+                 options: list[Option],
+                 should_show: Optional[Callable[[], bool]] = None):
+        super().__init__(label, should_show)
         self.should_show = should_show
+        self.options = options
+        self.title = title
 
 
 class Menu:
 
     def show(self, loop=False):
-        """Shows the menu to the user. It displays a list of options and lets the user
-        pick one of them."""
+        """Shows the menu to the user. It displays a list of possible actions and lets the user pick one of them.
+        loop: Can be set to True to make the menu re-appear when the chosen action has completed.
+              Useful for the main menu of the app, so multiple actions can be performed in one session.
+        """
 
         # Go through all the options and add the ones that should be shown
         relevant_options: list[Option] = []
@@ -88,13 +128,10 @@ class Menu:
             return
 
         print()
-        callback = relevant_options[selection].callback
 
-        try:
-            # Actually run the callback
-            callback()
-        except KeyboardInterrupt:
-            print(color_wrap("\n" + "Aborted", COLOR_RED))
+        # Execute the callback for the selected option
+        selected_option = relevant_options[selection]
+        selected_option.execute()
 
         if not loop:
             return

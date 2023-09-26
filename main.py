@@ -10,4 +10,4 @@ def log_in():
 
 main_menu = Menu([Option("Log in", log_in)], title="Mr Leeman's system")
 
-main_menu.show()
+main_menu.show(loop=True)
