@@ -83,7 +83,7 @@ class Submenu(MenuItem):
     def __init__(self,
                  label: str,
                  title: str,
-                 options: list[Option],
+                 options: list[MenuItem],
                  should_show: Optional[Callable[[], bool]] = None):
         super().__init__(label, should_show)
         self.should_show = should_show
@@ -100,7 +100,7 @@ class Menu:
         """
 
         # Go through all the options and add the ones that should be shown
-        relevant_options: list[Option] = []
+        relevant_options: list[MenuItem] = []
         for option in self.options:
             if option.should_show is not None:
                 if option.should_show():
@@ -139,7 +139,7 @@ class Menu:
         print("\n")
         self.show(loop)
 
-    def __init__(self, options: list[Option], title: Optional[str] = None):
+    def __init__(self, options: list[MenuItem], title: Optional[str] = None):
         options = options or []
         self.options = options
         self.title = title
