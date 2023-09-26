@@ -16,7 +16,7 @@ def get_selection(max: int) -> int | None:
     try:
         raw_input = input("Make a selection: ")
     except KeyboardInterrupt:
-        print(color_wrap("Selection cancelled!", COLOR_RED))
+        print(color_wrap("Cancelled!", COLOR_RED))
         return None
 
     if not raw_input.isnumeric():
@@ -30,6 +30,10 @@ def get_selection(max: int) -> int | None:
     if selection > max:
         print("Selection out of bounds: Must be below", max)
         return get_selection(max)
+
+    # If they entered 0, we assume that they want to exit the selection
+    if selection == 0:
+        return None
 
     # Subtract one from the selection, since the user is given options that are
     # indexed from 1, but we want them to be zero-indexed
