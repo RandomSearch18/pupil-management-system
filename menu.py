@@ -77,7 +77,7 @@ class Option(MenuItem):
 class Submenu(MenuItem):
 
     def execute(self):
-        menu = Menu(self.options)
+        menu = Menu(self.options, self.title)
         menu.show()
 
     def __init__(self,
