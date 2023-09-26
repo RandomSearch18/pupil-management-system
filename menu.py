@@ -39,8 +39,10 @@ def get_selection(max: int) -> int | None:
 
 class Option:
 
-    def __init__(self, label: str, callback: Callable,
-                 should_show: Callable[[], bool]):
+    def __init__(self,
+                 label: str,
+                 callback: Callable,
+                 should_show: Optional[Callable[[], bool]] = None):
         """Create a menu item that can be added to menu.
         name: The text that is shown to the user, in the menu
         callback: The function to run when the user selects the option
@@ -100,7 +102,7 @@ class Menu:
         print("\n")
         self.show(loop)
 
-    def __init__(self, options: list[Option], title: Optional[str]):
+    def __init__(self, options: list[Option], title: Optional[str] = None):
         options = options or []
         self.options = options
         self.title = title
