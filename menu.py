@@ -62,7 +62,7 @@ class Menu:
         # Go through all the options and add the ones that should be shown
         relevant_options: list[Option] = []
         for option in self.options:
-            if hasattr(option, "should_show"):
+            if option.should_show is not None:
                 if option.should_show():
                     relevant_options.append(option)
             else:
@@ -78,7 +78,7 @@ class Menu:
 
         # Print each option on its own line
         for i, option in enumerate(relevant_options):
-            print(f"{i+1}) {option['name']}")
+            print(f"{i+1}) {option.label}")
 
         # Ask the user to select a option number
         selection = get_selection(len(relevant_options))
