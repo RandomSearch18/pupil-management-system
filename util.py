@@ -8,7 +8,7 @@ class JSONDatabase():
     base_path = Path(".")
 
     def save(self):
-        """Saves the database to disk, ensuring that the file contents matches the in-memory contents."""
+        """Saves the database to disk, overwriting that the file contents to match the in-memory data."""
         with open(self.file_path, "w") as file:
             json.dump(self.data, file)
 
@@ -25,8 +25,8 @@ class JSONDatabase():
         try:
             self.load()
         except FileNotFoundError:
-            with open(self.file_path, "w") as new_file:
-                json.dump(initial_data, new_file)
+            self.data = initial_data
+            self.save()
 
 
 def get_file(file_path: Path, mode="r"):
