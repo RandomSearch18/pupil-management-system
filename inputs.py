@@ -1,5 +1,6 @@
-from base64 import b64encode
+import hashlib
 import re
+from base64 import b64encode
 from getpass import getpass
 
 import bcrypt
@@ -42,11 +43,17 @@ def username(prompt) -> str:
     return raw_input
 
 
-def password_to_hash(password: str) -> str:
+def password_to_hash(raw_password: str) -> str:
     """Uses bcrypt to salt and hash the provided password, so that it can be stored safely.
     Returns the password hash encoded in Base64 as a string."""
+
+    # To handle passwords that are over 72 characters long, we hash it using sha256 first
+    # This is reccomended by https://pypi.org/project/bcrypt#maximum-password-length
+    processed_password = b64encode(
+        hashlib.sha256(raw_password.encode("utf-8")).digest())
+
     salt = bcrypt.gensalt()
-    hash = bcrypt.hashpw(password.encode("utf-8"), salt)
+    hash = bcrypt.hashpw(processed_password, salt)
     return b64encode(hash).decode("utf-8")
 
 
