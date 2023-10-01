@@ -1,4 +1,5 @@
 { pkgs }: {
-  deps = [
+  deps = [pkgs.cloc
+
   ];
 }
