@@ -10,6 +10,12 @@ def error_incorrect_input(message: str):
     print(color(f"❌ {message}", Fore.RED))
 
 
+def print_hint(hint: str):
+    """Hints are deemphasized lines of text that go above an input,
+    providing tips, hints, context or description relavant to that input."""
+    print(color(hint, Style.DIM))
+
+
 def color(string: str, color: str) -> str:
     """Applies an ANSI colour code to a string"""
     return f"{color}{string}{Style.RESET_ALL}"

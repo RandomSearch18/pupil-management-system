@@ -1,7 +1,7 @@
 from colorama import Style
 
 import inputs
-from menu import color, error_incorrect_input
+from menu import color, error_incorrect_input, print_hint
 from util import JSONDatabase, check_password
 
 
@@ -42,5 +42,6 @@ class AccountsDatabase(JSONDatabase):
 
         error_incorrect_input("Incorrect password")
         if not suppress_hints:
-            print(color("Tip: Try again or press Ctrl+C to cancel", Style.DIM))
+            # Let the user know how to give up entering their password
+            print_hint("Tip: Try again or press Ctrl+C to cancel")
         return self.authenticate_user(username, suppress_hints=True)

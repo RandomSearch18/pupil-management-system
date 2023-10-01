@@ -6,7 +6,7 @@ from colorama import init as init_colorama
 
 import inputs
 from accounts import AccountsDatabase
-from menu import Menu, Option, Submenu, error_incorrect_input
+from menu import Menu, Option, Submenu, error_incorrect_input, print_hint
 
 
 def log_in():
@@ -28,7 +28,7 @@ def log_in():
 
 
 def create_account():
-    print(
+    print_hint(
         "Your username will identify you as an individual, and you'll enter it to access this system."
     )
     username = inputs.new_username("Create a username: ")
@@ -40,11 +40,11 @@ def create_account():
         print("To continue, pick another username or try logging in instead.")
         return create_account()
 
-    print(
-        "Your password is a secret phrase that you'll use to prove who you are when you log in"
-    )
-    print(
-        "Note that you won't be able to see your password while you're entering it"
+    print_hint(
+        "Your password is a secret phrase that you'll use to prove who you are when you log in."
+        + " It cannot be reset, so keep it safe!")
+    print_hint(
+        "Note: You won't be able to see your password while you're entering it"
     )
     password_hash = inputs.new_password("Set your password: ")
 
