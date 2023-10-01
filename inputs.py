@@ -1,3 +1,4 @@
+import datetime
 import hashlib
 import unicodedata
 from base64 import b64encode
@@ -103,8 +104,7 @@ def new_password(prompt, hide_characters=True):
 
 def name(prompt):
     """Names can include letters from any script, as well as spaces, hyphens and periods.
-    Returns the name in title case.
-    """
+    Returns the name in title case."""
     # Allow any alphabetic character, any space charcater, hyphens and periods
     valid_name_regex = r"[\p{Alphabetic}\p{Z}\-\.']+"
 
@@ -114,3 +114,21 @@ def name(prompt):
         return name(prompt)
 
     return raw_input.title()
+
+
+def date(prompt) -> datetime.date:
+    """Prompts the user to input a date in YYYY-MM-DD format."""
+    # Rule 1 of dealing with timezones: Don't deal with timezones
+    raw_input = text(prompt)
+
+    try:
+        parsed_date = datetime.date.fromisoformat(raw_input)
+    except ValueError:
+        error_incorrect_input("Enter a valid date in the format YYYY-MM-DD")
+        return date(prompt)
+
+    if parsed_date > datetime.date.today():
+        error_incorrect_input("Enter a date that's in the past")
+        return date(prompt)
+
+    return parsed_date

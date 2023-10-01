@@ -16,9 +16,12 @@ class AccountsDatabase(JSONDatabase):
                 return account
         return None
 
-    def add_user(self, username: str, password_hash: str):
-        new_user = {"username": username, "password_hash": password_hash}
-        self.data.append(new_user)
+    def get_usernames(self) -> list[str]:
+        return [account["username"] for account in self.data]
+
+    def add_account(self, username: str, password_hash: str):
+        new_account = {"username": username, "password_hash": password_hash}
+        self.data.append(new_account)
         self.save()
 
     def authenticate_user(self, username: str, suppress_hints=False) -> bool:

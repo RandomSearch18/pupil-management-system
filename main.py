@@ -6,7 +6,7 @@ from colorama import init as init_colorama
 
 import inputs
 from accounts import AccountsDatabase
-from menu import Menu, Option, Submenu, error_incorrect_input, print_hint
+from menu import Menu, Option, Submenu, bold, color, error_incorrect_input, print_hint
 
 
 def log_in():
@@ -15,7 +15,7 @@ def log_in():
 
     if not matching_user:
         error_incorrect_input(
-            f"No account exists with the username {target_username}.")
+            f"No account exists with the username {bold(target_username)}")
         return log_in()
 
     is_authenticated = accounts_database.authenticate_user(target_username)
@@ -27,37 +27,44 @@ def log_in():
     current_account = matching_user
 
 
-def create_account():
-    print_hint(
-        "Your username will identify you as an individual, and you'll enter it to access this system."
-    )
+def ask_for_new_username(show_tip=True) -> str:
     username = inputs.new_username("Create a username: ")
 
     matching_user = accounts_database.get_account(username)
     if matching_user:
         error_incorrect_input(
-            f"There's already an account with the username {username}")
-        print("To continue, pick another username or try logging in instead.")
-        return create_account()
+            f"There's already an account with the username {bold(username)}")
+        if show_tip:
+            print_hint("Tip: Pick another username or try logging in instead.")
+
+        return ask_for_new_username(show_tip=False)
+
+    return username
+
+
+def create_account():
+    print_hint(
+        "Your username will identify you as an individual, and you'll enter it to access this system."
+    )
+    username = ask_for_new_username()
 
     print_hint(
         "Your password is a secret phrase that you'll use to prove who you are when you log in."
         + " It cannot be reset, so keep it safe!")
     print_hint(
-        "Note: You won't be able to see your password while you're entering it"
-    )
+        "Note: You won't be able to see your password while you're typing it.")
     password_hash = inputs.new_password("Set your password: ")
 
-    accounts_database.add_user(username, password_hash)
+    accounts_database.add_account(username, password_hash)
     accounts_database.save()
     print()
-    print(
-        f"Created a new account called {Style.BRIGHT}{username}{Style.RESET_ALL}"
-    )
+    print(f"Created a new account called {bold(username)}")
 
 
 def register_student():
     forename = inputs.name("Forename: ")
+    surname = inputs.name("Surname: ")
+    birthday = inputs.date(f"Birthday: {color('(YYYY-MM-DD)', Style.DIM)} ")
 
 
 # Initialise the Colorama libary for terminal formatting utils

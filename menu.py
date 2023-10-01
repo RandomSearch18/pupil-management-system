@@ -16,6 +16,11 @@ def print_hint(hint: str):
     print(color(hint, Style.DIM))
 
 
+def bold(string: str) -> str:
+    """Makse the provided string bold, using ANSI escape codes"""
+    return color(string, Style.BRIGHT)
+
+
 def color(string: str, color: str) -> str:
     """Applies an ANSI colour code to a string"""
     return f"{color}{string}{Style.RESET_ALL}"
