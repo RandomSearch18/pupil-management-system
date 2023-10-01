@@ -1,4 +1,7 @@
+from colorama import Style
+
 import inputs
+from menu import color, error_incorrect_input
 from util import JSONDatabase, check_password
 
 
@@ -18,7 +21,7 @@ class AccountsDatabase(JSONDatabase):
         self.data.append(new_user)
         self.save()
 
-    def authenticate_user(self, username: str) -> bool:
+    def authenticate_user(self, username: str, suppress_hints=False) -> bool:
         """Prompts the user to enter their password, in order to log in with the provided username.
         Keeps prompting for a password until it's correctly entered or the user cancels.
         Returns True if authentication was successful, and False if it wasn't.
@@ -37,4 +40,7 @@ class AccountsDatabase(JSONDatabase):
         is_authenticated = check_password(attempt, correct_password_hash)
         if is_authenticated: return True
 
-        return self.authenticate_user(username)
+        error_incorrect_input("Incorrect password")
+        if not suppress_hints:
+            print(color("Tip: Try again or press Ctrl+C to cancel", Style.DIM))
+        return self.authenticate_user(username, suppress_hints=True)
