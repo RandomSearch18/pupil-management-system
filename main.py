@@ -56,6 +56,10 @@ def create_account():
     )
 
 
+def register_student():
+    forename = inputs.name("Forename: ")
+
+
 # Initialise the Colorama libary for terminal formatting utils
 init_colorama()
 
@@ -67,6 +71,8 @@ main_menu = Menu(
     options=[
         Option("Log in", log_in, lambda: not current_account),
         Option("Create account", create_account, lambda: not current_account),
+        Option("Register new student", register_student,
+               lambda: bool(current_account)),
         Submenu("Go to the sub menu", "Sub-menu",
                 [Option("Log in 1", log_in),
                  Option("Log in 2", log_in)])

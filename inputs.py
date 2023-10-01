@@ -1,9 +1,10 @@
 import hashlib
-import re
+import unicodedata
 from base64 import b64encode
 from getpass import getpass
 
 import bcrypt
+import regex as re
 
 from menu import error_incorrect_input
 from util import process_password
@@ -17,13 +18,29 @@ def question(prompt) -> str:
 
 
 def text(prompt, error_message="Enter some text") -> str:
-    """Asks the user for input, ensuring that they've entered at least 1 character"""
-    raw_input = question(prompt)
-    if not raw_input:
+    """Asks the user for input that contains some text content.
+    
+    - Ensures that they've entered at least 1 non-whitespace character
+    - Removes leading/trailing whitespace
+    - Normalizes the unicode characters (composed and canonical form)
+    """
+
+    try:
+        raw_input = question(prompt)
+    except UnicodeDecodeError:
+        # So, you thought it'd be funny to enter invalid UTF-8, eh?
+        error_incorrect_input("Invalid character sequence")
+        return text(prompt, error_message)
+
+    # NFKC ensures that composed characters are used where possible, and also replaces
+    # compatability characters with their canonical form, https://stackoverflow.com/a/16467505
+    normalized_input = unicodedata.normalize("NFKC", raw_input.strip())
+
+    if not normalized_input:
         error_incorrect_input(error_message)
         return text(prompt)
 
-    return raw_input
+    return normalized_input
 
 
 def new_username(prompt) -> str:
@@ -82,3 +99,18 @@ def new_password(prompt, hide_characters=True):
             password(prompt, error_message, hide_characters=False))
 
     return password_to_hash(password(prompt, error_message))
+
+
+def name(prompt):
+    """Names can include letters from any script, as well as spaces, hyphens and periods.
+    Returns the name in title case.
+    """
+    # Allow any alphabetic character, any space charcater, hyphens and periods
+    valid_name_regex = r"[\p{Alphabetic}\p{Z}\-\.']+"
+
+    raw_input = text(prompt)
+    if not re.match(valid_name_regex, raw_input):
+        error_incorrect_input("Only use letters, ., -, ', and spaces")
+        return name(prompt)
+
+    return raw_input.title()
