@@ -106,7 +106,7 @@ def name(prompt):
     """Names can include letters from any script, as well as spaces, hyphens and periods.
     Returns the name in title case."""
     # Allow any alphabetic character, any space charcater, hyphens and periods
-    valid_name_regex = r"[\p{Alphabetic}\p{Z}\-\.']+"
+    valid_name_regex = r"^[\p{Alphabetic}\p{Z}\-\.']+$"
 
     raw_input = text(prompt)
     if not re.match(valid_name_regex, raw_input):
@@ -132,3 +132,22 @@ def date(prompt) -> datetime.date:
         return date(prompt)
 
     return parsed_date
+
+
+def tutor_group(prompt):
+    """Prompts the user to input a tutor group
+    
+    - Normalises the returned tutor group to be in uppercase
+    - Checks that the input's in the format of a tutor group
+    - Doesn't check that the input is a sutor group that actually exists
+    Note: The spec doesn't really explain how tutor groups are meant to work"""
+    # Allow 1+ digits followed by 1+ capital letters, e.g 7CA or 12A
+    tutor_group_regex = r"^(\d+)([A-Z]+)$"
+
+    raw_input = text(prompt).upper()
+
+    if not re.match(tutor_group_regex, raw_input):
+        error_incorrect_input("Enter a tutor group in a format like 13AX")
+        return tutor_group(prompt)
+
+    return raw_input
