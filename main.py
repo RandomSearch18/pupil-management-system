@@ -11,7 +11,7 @@ from menu import Menu, Option, Submenu, error_incorrect_input, print_hint
 
 def log_in():
     target_username = inputs.text("Username: ", "Enter your username")
-    matching_user = accounts_database.get_user(username=target_username)
+    matching_user = accounts_database.get_account(username=target_username)
 
     if not matching_user:
         error_incorrect_input(
@@ -33,7 +33,7 @@ def create_account():
     )
     username = inputs.new_username("Create a username: ")
 
-    matching_user = accounts_database.get_user(username)
+    matching_user = accounts_database.get_account(username)
     if matching_user:
         error_incorrect_input(
             f"There's already an account with the username {username}")
