@@ -51,6 +51,7 @@ def password_to_hash(raw_password: str) -> str:
     # This is reccomended by https://pypi.org/project/bcrypt#maximum-password-length
     processed_password = b64encode(
         hashlib.sha256(raw_password.encode("utf-8")).digest())
+    print(processed_password)
 
     salt = bcrypt.gensalt()
     hash = bcrypt.hashpw(processed_password, salt)
@@ -70,4 +71,4 @@ def password(prompt, hide_characters=True):
         print(f"{icon_error} Enter a password to keep your account secure")
         return password(prompt, hide_characters)
 
-    return password_to_hash(prompt)
+    return password_to_hash(raw_input)
