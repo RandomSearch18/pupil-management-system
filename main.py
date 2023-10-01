@@ -8,13 +8,20 @@ from colorama import init as init_colorama
 
 import inputs
 from accounts import AccountsDatabase
-from menu import Menu, Option, Submenu
+from menu import Menu, Option, Submenu, error_incorrect_input
 from util import check_password
 
 
 def log_in():
     target_username = inputs.text("Username: ", "Enter your username")
     matching_user = accounts_database.get_user(username=target_username)
+
+    if not matching_user:
+        error_incorrect_input(
+            f"No account exists with the username {target_username}. Try again."
+        )
+        print()
+        return log_in()
 
     attempt = inputs.password("Password: ")
     is_authenticated = check_password(attempt, matching_user["password_hash"])
@@ -27,7 +34,12 @@ def create_account():
     )
     username = inputs.new_username("Create a username: ")
 
-    # TODO: Check for dupe usernames
+    matching_user = accounts_database.get_user(username)
+    if matching_user:
+        error_incorrect_input(
+            f"There's already an account with the username {username}")
+        print("To continue, pick another username or try logging in instead.")
+        return create_account()
 
     print(
         "Your password is a secret phrase that you'll use to prove who you are when you log in"

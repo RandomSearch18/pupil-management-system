@@ -5,6 +5,12 @@ from typing import Callable, Optional
 COLOR_RED = "\x1b[31m"
 
 
+def error_incorrect_input(message: str):
+    """Prints a error message to notify the user that their inputed text is incorrect.
+    They should immediately be given the option to retry."""
+    print(f"❌ {message}")
+
+
 def color_wrap(string: str, color: str) -> str:
     """Applies an ANSI colour code to a string"""
     return f"{color}{string}\033[0m"

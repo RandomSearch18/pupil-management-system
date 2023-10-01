@@ -5,10 +5,8 @@ from getpass import getpass
 
 import bcrypt
 
+from menu import error_incorrect_input
 from util import process_password
-
-## Text constants
-icon_error = "❌"
 
 
 def question(prompt) -> str:
@@ -22,7 +20,7 @@ def text(prompt, error_message="Enter some text") -> str:
     """Asks the user for input, ensuring that they've entered at least 1 character"""
     raw_input = question(prompt)
     if not raw_input:
-        print(f"{icon_error} {error_message}")
+        error_incorrect_input(error_message)
         return text(prompt)
 
     return raw_input
@@ -36,10 +34,10 @@ def new_username(prompt) -> str:
     raw_input = text(prompt, "Enter a username")
     length = len(raw_input)
     if not 1 <= length <= 64:
-        print(f"{icon_error} Enter a username made up of 1–64 characters")
+        error_incorrect_input("Enter a username made up of 1–64 characters")
         return new_username(prompt)
     if not re.search(valid_username_regex, raw_input):
-        print(f"{icon_error} Only use letters, numbers, ., -, _, and spaces")
+        error_incorrect_input("Only use letters, numbers, ., -, _, and spaces")
         return new_username(prompt)
 
     return raw_input
@@ -67,7 +65,7 @@ def password(prompt,
 
     raw_input = getpass(prompt)
     if not raw_input:
-        print(f"{icon_error} {error_message}")
+        error_incorrect_input(error_message)
         return password(prompt, error_message, hide_characters)
 
     return raw_input
