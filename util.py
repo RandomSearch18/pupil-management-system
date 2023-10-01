@@ -1,6 +1,26 @@
+import bcrypt
+import hashlib
 import json
+from base64 import b64decode, b64encode
 from pathlib import Path
 from typing import Any
+
+
+def check_password(inputted_password: str, correct_password_hash: str):
+    # This is where we add `return true` https://youtu.be/y4GB_NDU43Q?t=97
+    correct_hash_bytes = b64decode(correct_password_hash)
+    processed_attempt = b64encode(
+        hashlib.sha256(inputted_password.encode("utf-8")).digest())
+
+    return bcrypt.checkpw(processed_attempt, correct_hash_bytes)
+
+
+def process_password(raw_password: str) -> bytes:
+    """Returns a base64-encoded sha256 hash of the provided password string,
+    so that it can then be hashed using bcrypt without its character limit being an issue.
+    See https://pypi.org/project/bcrypt#maximum-password-length for details.
+    """
+    return b64encode(hashlib.sha256(raw_password.encode("utf-8")).digest())
 
 
 class JSONDatabase():

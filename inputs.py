@@ -5,6 +5,8 @@ from getpass import getpass
 
 import bcrypt
 
+from util import process_password
+
 ## Text constants
 icon_error = "❌"
 
@@ -46,29 +48,39 @@ def username(prompt) -> str:
 def password_to_hash(raw_password: str) -> str:
     """Uses bcrypt to salt and hash the provided password, so that it can be stored safely.
     Returns the password hash encoded in Base64 as a string."""
-
-    # To handle passwords that are over 72 characters long, we hash it using sha256 first
-    # This is reccomended by https://pypi.org/project/bcrypt#maximum-password-length
-    processed_password = b64encode(
-        hashlib.sha256(raw_password.encode("utf-8")).digest())
-    print(processed_password)
+    # Pre-process the password to work around bcrypt's 72-character limit
+    processed_password = process_password(raw_password)
 
     salt = bcrypt.gensalt()
     hash = bcrypt.hashpw(processed_password, salt)
     return b64encode(hash).decode("utf-8")
 
 
-def password(prompt, hide_characters=True):
-    """A password must be at least 1 character, but has no other limitations.
-    Returns a hashed and salted version of the password.
-    By default, the typed text will be hidden from the user, but this can be disabled by setting hide_characters=False"""
+def password(prompt,
+             error_message="Enter a password to authenticate",
+             hide_characters=True):
+    """Uses the getpass module to prevent the typed text being echoed,
+    helping limit the effectiveness of sholder-surfing.
+    This behaviour can be disabled by setting hide_characters=False."""
     if not hide_characters:
-        return password_to_hash(
-            text(prompt, "Enter a password to keep your account secure"))
+        return text(prompt, error_message)
 
     raw_input = getpass(prompt)
     if not raw_input:
-        print(f"{icon_error} Enter a password to keep your account secure")
-        return password(prompt, hide_characters)
+        print(f"{icon_error} {error_message}")
+        return password(prompt, error_message, hide_characters)
 
-    return password_to_hash(raw_input)
+    return raw_input
+
+
+def new_password(prompt, hide_characters=True):
+    """A password must be at least 1 character, but has no other limitations.
+    Returns a hashed and salted version of the password.
+    By default, the typed text will be hidden from the user, but this can be disabled by setting hide_characters=False"""
+    error_message = "Enter a password to keep your account secure"
+
+    if not hide_characters:
+        return password_to_hash(
+            password(prompt, error_message, hide_characters=False))
+
+    return password_to_hash(password(prompt, error_message))

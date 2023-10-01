@@ -2,26 +2,21 @@
 This code is for Task 3 of the lesson 2.2.1 Programming fundamentals - validation"""
 
 import hashlib
-from base64 import b64encode, b64decode
-import bcrypt
+
 from colorama import Fore, Style
 from colorama import init as init_colorama
 
 import inputs
 from menu import Menu, Option, Submenu
-from util import JSONDatabase
+from util import JSONDatabase, check_password
 
 
 def log_in():
-    print("Logging in")
     account = accounts[0]
-    #correct_password =
 
-    correct_hash = b64decode(account["password_hash"])
-    attempt = input("PW: ")
-    processed_attempt = b64encode(hashlib.sha256(attempt.encode("utf-8")).digest())
-    print(processed_attempt)
-    print(bcrypt.checkpw(processed_attempt, correct_hash))
+    attempt = inputs.password("Password: ")
+    is_authenticated = check_password(attempt, account["password_hash"])
+    print(is_authenticated)
 
 
 def create_account():
@@ -38,7 +33,7 @@ def create_account():
     print(
         "Note that you won't be able to see your password while you're entering it"
     )
-    password_hash = inputs.password("Set your password: ")
+    password_hash = inputs.new_password("Set your password: ")
 
     accounts.append({"username": username, "password_hash": password_hash})
     accounts_database.save()
