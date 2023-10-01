@@ -1,19 +1,18 @@
 """A menu-driven interface based around the Menu and Option classes"""
 from typing import Callable, Optional
 
-# Terminal colour codes
-COLOR_RED = "\x1b[31m"
+from colorama import Fore, Style
 
 
 def error_incorrect_input(message: str):
     """Prints a error message to notify the user that their inputed text is incorrect.
     They should immediately be given the option to retry."""
-    print(f"❌ {message}")
+    print(color(f"❌ {message}", Fore.RED))
 
 
-def color_wrap(string: str, color: str) -> str:
+def color(string: str, color: str) -> str:
     """Applies an ANSI colour code to a string"""
-    return f"{color}{string}\033[0m"
+    return f"{color}{string}{Style.RESET_ALL}"
 
 
 def get_selection(max: int) -> int | None:
@@ -22,7 +21,7 @@ def get_selection(max: int) -> int | None:
     try:
         raw_input = input("Make a selection: ")
     except KeyboardInterrupt:
-        print(color_wrap("Cancelled!", COLOR_RED))
+        print(color("Cancelled!", Fore.RED))
         return None
 
     if not raw_input.isnumeric():
@@ -81,7 +80,7 @@ class Option(MenuItem):
         try:
             self.callback()
         except KeyboardInterrupt:
-            print(color_wrap("\n" + "Aborted", COLOR_RED))
+            print(color("\n" + "Aborted", COLOR_RED))
 
 
 class Submenu(MenuItem):

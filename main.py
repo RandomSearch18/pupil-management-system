@@ -3,7 +3,7 @@ This code is for Task 3 of the lesson 2.2.1 Programming fundamentals - validatio
 
 import hashlib
 
-from colorama import Fore, Style
+from colorama import Style
 from colorama import init as init_colorama
 
 import inputs
@@ -18,9 +18,7 @@ def log_in():
 
     if not matching_user:
         error_incorrect_input(
-            f"No account exists with the username {target_username}. Try again."
-        )
-        print()
+            f"No account exists with the username {target_username}.")
         return log_in()
 
     attempt = inputs.password("Password: ")
