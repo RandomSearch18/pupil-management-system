@@ -46,6 +46,17 @@ files = [
 ]
 
 [[package]]
+name = "phonenumbers"
+version = "8.13.22"
+description = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
+optional = false
+python-versions = "*"
+files = [
+    {file = "phonenumbers-8.13.22-py2.py3-none-any.whl", hash = "sha256:85ceeba9e67984ba98182c77e8e4c70093d38c0c6a0cb2bd392e0694ddaeb1f6"},
+    {file = "phonenumbers-8.13.22.tar.gz", hash = "sha256:001664c90f59b8954766c2db85adafc8dbc96177efeb49607ca4e64a7acaf569"},
+]
+
+[[package]]
 name = "regex"
 version = "2023.8.8"
 description = "Alternative regular expression module, to replace re."
@@ -145,4 +156,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10.0,<3.11"
-content-hash = "ad39ceb77e4d11eedcbae6ccf6ba9bc9fe654e46f21830d5fbe04d9685159cde"
+content-hash = "571c84ee1f85c381446b3a6863b06db4b1cdefb33c6183d3710032e5291dd4d2"

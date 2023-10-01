@@ -66,7 +66,8 @@ def register_student():
     surname = inputs.name("Surname: ")
     birthday = inputs.date(f"Birthday: {color('(YYYY-MM-DD)', Style.DIM)} ")
     tutor_group = inputs.tutor_group("Tutor group: ")
-    address = inputs.multiline("Home address: ")
+    home_address = inputs.multiline("Home address: ")
+    home_phone = inputs.phone_number("Home phone number: ")
 
 
 # Initialise the Colorama libary for terminal formatting utils

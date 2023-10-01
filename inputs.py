@@ -5,6 +5,8 @@ from base64 import b64encode
 from getpass import getpass
 
 import bcrypt
+import phonenumbers
+from phonenumbers.phonenumberutil import NumberParseException
 import regex as re
 from colorama import Style
 
@@ -173,3 +175,23 @@ def tutor_group(prompt):
         return tutor_group(prompt)
 
     return raw_input
+
+
+def phone_number(prompt):
+    """Prompts the user to input a valid UK or international phone number"""
+    raw_input = text(prompt)
+
+    try:
+        parsed_phone_number = phonenumbers.parse(raw_input, "GB")
+    except NumberParseException:
+        error_incorrect_input(
+            "Enter a phone number (UK or international format)")
+        return phone_number(prompt)
+
+    if not phonenumbers.is_possible_number(parsed_phone_number):
+        error_incorrect_input("Enter a correctly-formatted phone number")
+        return phone_number(prompt)
+
+    serialized_phone_number = phonenumbers.format_number(
+        parsed_phone_number, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+    return serialized_phone_number

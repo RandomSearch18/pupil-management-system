@@ -9,6 +9,7 @@ python = ">=3.10.0,<3.11"
 bcrypt = "^4.0.1"
 colorama = "^0.4.6"
 regex = "^2023.8.8"
+phonenumbers = "^8.13.22"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md
