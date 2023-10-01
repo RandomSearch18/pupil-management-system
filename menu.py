@@ -25,15 +25,16 @@ def get_selection(max: int) -> int | None:
         return None
 
     if not raw_input.isnumeric():
-        print("Your selection must be a positive number!")
+        error_incorrect_input("Your selection must be a positive number!")
         return get_selection(max)
 
     selection = int(raw_input)
     if selection < 0:
-        print("Select a positive number!")
+        error_incorrect_input("Select a positive number!")
         return get_selection(max)
     if selection > max:
-        print("Selection out of bounds: Must be below", max)
+        error_incorrect_input(
+            f"Selection out of bounds: Must be below {max+1}")
         return get_selection(max)
 
     # If they entered 0, we assume that they want to exit the selection
@@ -80,7 +81,7 @@ class Option(MenuItem):
         try:
             self.callback()
         except KeyboardInterrupt:
-            print(color("\n" + "Aborted", COLOR_RED))
+            print(color("\n" + "Aborted", Fore.RED))
 
 
 class Submenu(MenuItem):
@@ -119,7 +120,7 @@ class Menu:
 
         # Handle the case of no available options
         if len(relevant_options) == 0:
-            print("No options available. Goodbye!")
+            print(color("No options available. Goodbye!", Fore.RED))
             return
 
         if self.title:
