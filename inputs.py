@@ -6,8 +6,9 @@ from getpass import getpass
 
 import bcrypt
 import regex as re
+from colorama import Style
 
-from menu import error_incorrect_input
+from menu import color, error_incorrect_input
 from util import process_password
 
 
@@ -18,6 +19,20 @@ def question(prompt) -> str:
     return input(f"{prompt}")
 
 
+def valid_utf8(prompt):
+    """Asks the user for input, returning a valid, normalised UTF-8 string"""
+    try:
+        raw_input = question(prompt)
+    except UnicodeDecodeError:
+        # So, you thought it'd be funny to enter invalid UTF-8, eh?
+        error_incorrect_input("Invalid character sequence")
+        return valid_utf8(prompt)
+
+    # NFKC ensures that composed characters are used where possible, and also replaces
+    # compatability characters with their canonical form, https://stackoverflow.com/a/16467505
+    return unicodedata.normalize("NFKC", raw_input.strip())
+
+
 def text(prompt, error_message="Enter some text") -> str:
     """Asks the user for input that contains some text content.
     
@@ -25,23 +40,30 @@ def text(prompt, error_message="Enter some text") -> str:
     - Removes leading/trailing whitespace
     - Normalizes the unicode characters (composed and canonical form)
     """
+    stripped_input = valid_utf8(prompt).strip()
 
-    try:
-        raw_input = question(prompt)
-    except UnicodeDecodeError:
-        # So, you thought it'd be funny to enter invalid UTF-8, eh?
-        error_incorrect_input("Invalid character sequence")
-        return text(prompt, error_message)
-
-    # NFKC ensures that composed characters are used where possible, and also replaces
-    # compatability characters with their canonical form, https://stackoverflow.com/a/16467505
-    normalized_input = unicodedata.normalize("NFKC", raw_input.strip())
-
-    if not normalized_input:
+    if not stripped_input:
         error_incorrect_input(error_message)
         return text(prompt)
 
-    return normalized_input
+    return stripped_input
+
+
+def multiline(prompt):
+    print(prompt + color(
+        "(Enter to insert newlines; press Enter twice to submit)", Style.DIM))
+
+    lines = []
+    while True:
+        line = valid_utf8("")
+        if line == "":
+            break
+        # Preserve indentation but remove trailing spaces
+        line.rstrip()
+        lines.append(line)
+
+    full_input = "\n".join(lines)
+    return full_input
 
 
 def new_username(prompt) -> str:
