@@ -1,15 +1,12 @@
 """Mr Leeman's System: A pupil management system for Tree Road School
 This code is for Task 3 of the lesson 2.2.1 Programming fundamentals - validation"""
 
-import hashlib
-
 from colorama import Style
 from colorama import init as init_colorama
 
 import inputs
 from accounts import AccountsDatabase
 from menu import Menu, Option, Submenu, error_incorrect_input
-from util import check_password
 
 
 def log_in():
@@ -21,9 +18,13 @@ def log_in():
             f"No account exists with the username {target_username}.")
         return log_in()
 
-    attempt = inputs.password("Password: ")
-    is_authenticated = check_password(attempt, matching_user["password_hash"])
-    print(is_authenticated)
+    is_authenticated = accounts_database.authenticate_user(target_username)
+    if not is_authenticated:
+        return
+
+    # From this point on, our user is authenticated
+    global current_account
+    current_account = matching_user
 
 
 def create_account():
@@ -65,7 +66,7 @@ main_menu = Menu(
     title="Mr Leeman's system",
     options=[
         Option("Log in", log_in, lambda: not current_account),
-        Option("Create account", create_account),
+        Option("Create account", create_account, lambda: not current_account),
         Submenu("Go to the sub menu", "Sub-menu",
                 [Option("Log in 1", log_in),
                  Option("Log in 2", log_in)])
