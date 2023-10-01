@@ -28,7 +28,7 @@ def text(prompt, error_message="Enter some text") -> str:
     return raw_input
 
 
-def username(prompt) -> str:
+def new_username(prompt) -> str:
     """Usernames can be 1 to 64 characters. They must only be made up of word characters,
     periods, hyphens or spaces."""
     valid_username_regex = r"^[\w\.\- ]+$"
@@ -37,10 +37,10 @@ def username(prompt) -> str:
     length = len(raw_input)
     if not 1 <= length <= 64:
         print(f"{icon_error} Enter a username made up of 1–64 characters")
-        return username(prompt)
+        return new_username(prompt)
     if not re.search(valid_username_regex, raw_input):
         print(f"{icon_error} Only use letters, numbers, ., -, _, and spaces")
-        return username(prompt)
+        return new_username(prompt)
 
     return raw_input
 

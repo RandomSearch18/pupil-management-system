@@ -7,15 +7,17 @@ from colorama import Fore, Style
 from colorama import init as init_colorama
 
 import inputs
+from accounts import AccountsDatabase
 from menu import Menu, Option, Submenu
-from util import JSONDatabase, check_password
+from util import check_password
 
 
 def log_in():
-    account = accounts[0]
+    target_username = inputs.text("Username: ", "Enter your username")
+    matching_user = accounts_database.get_user(username=target_username)
 
     attempt = inputs.password("Password: ")
-    is_authenticated = check_password(attempt, account["password_hash"])
+    is_authenticated = check_password(attempt, matching_user["password_hash"])
     print(is_authenticated)
 
 
@@ -23,7 +25,7 @@ def create_account():
     print(
         "Your username will identify you as an individual, and you'll enter it to access this system."
     )
-    username = inputs.username("Create a username: ")
+    username = inputs.new_username("Create a username: ")
 
     # TODO: Check for dupe usernames
 
@@ -35,7 +37,7 @@ def create_account():
     )
     password_hash = inputs.new_password("Set your password: ")
 
-    accounts.append({"username": username, "password_hash": password_hash})
+    accounts_database.add_user(username, password_hash)
     accounts_database.save()
     print()
     print(
@@ -43,11 +45,11 @@ def create_account():
     )
 
 
+# Initialise the Colorama libary for terminal formatting utils
 init_colorama()
-accounts_database = JSONDatabase("accounts.json", [])
-accounts = accounts_database.data
 
-current_account = None
+accounts_database = AccountsDatabase()
+current_account = None  # Store the account that is currently signed in
 
 main_menu = Menu(
     title="Mr Leeman's system",
