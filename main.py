@@ -94,7 +94,7 @@ def log_out():
 
     old_username = current_account["username"]
     current_account = None
-    print(f"Signed out of account {bold(old_username)}")
+    print(f"Logged out of account {bold(old_username)}")
 
 
 # Initialise the Colorama libary for terminal formatting utils
