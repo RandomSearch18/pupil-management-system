@@ -87,6 +87,16 @@ def register_student():
     print(f"ID number: {id_formatted}")
 
 
+def log_out():
+    global current_account
+    if not current_account:
+        return print("Nobody is signed in!")
+
+    old_username = current_account["username"]
+    current_account = None
+    print(f"Signed out of account {bold(old_username)}")
+
+
 # Initialise the Colorama libary for terminal formatting utils
 init_colorama()
 
@@ -103,6 +113,7 @@ main_menu = Menu(
         Option("Create account", create_account, lambda: not current_account),
         Option("Register new student", register_student,
                lambda: bool(current_account)),
+        Option("Log out", log_out, lambda: bool(current_account)),
         Submenu("Go to the sub menu", "Sub-menu",
                 [Option("Log in 1", log_in),
                  Option("Log in 2", log_in)])
