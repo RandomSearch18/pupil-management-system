@@ -75,8 +75,9 @@ def register_student():
 
     print()
     name_formatted = bold(f"{student['forename']} {student['surname']}")
-    print(f"Registered student {name_formatted} with details:")
-    # mention email etc
+    print(f"Registered student \"{name_formatted}\"")
+    print(f"School email address: {student['school_email']}")
+    print(f"ID number: {student['id']}")
 
 
 # Initialise the Colorama libary for terminal formatting utils

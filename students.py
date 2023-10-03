@@ -8,7 +8,8 @@ class StudentsDatabase(JSONDatabase):
     def __init__(self):
         super().__init__("students.json", [])
 
-    def get_student(self, id: int | None = None,
+    def get_student(self,
+                    id: int | None = None,
                     email_address: str | None = None) -> dict | None:
         """Looks up a student using the provided unique identifier(s)
         
@@ -19,27 +20,31 @@ class StudentsDatabase(JSONDatabase):
         for student in self.data:
             if id and student["id"] == id:
                 return student
-            if email_address and student["email_address"] == email_address:
+            if email_address and student["school_email"] == email_address:
                 return student
         return None
 
     def next_id(self):
         return len(self.data) + 1
 
-    def generate_email_address(self, surname, forename, discriminator: int = 0):
+    def generate_email_address(self,
+                               surname,
+                               forename,
+                               discriminator: int = 0):
         domain = "tree-road.edu"
         surname_part = surname.lower()
         forename_part = forename.lower()[0]
         # If the discriminator is 0, don't include it at all:
         discriminator_part = str(discriminator) if discriminator else ""
-        
+
         possible_email = f"{surname_part}{forename_part}@{domain}"
 
         # Check if the addresss is taken
         if self.get_student(email_address=possible_email):
-            # Increment the discriminator 
+            # Increment the discriminator
             discriminator = discriminator + 1
-            return self.generate_email_address(surname, forename, discriminator)
+            return self.generate_email_address(surname, forename,
+                                               discriminator)
 
         return possible_email
 
@@ -55,8 +60,8 @@ class StudentsDatabase(JSONDatabase):
         - Returns the directory of the student's data
         """
 
-        email_address =
-        
+        email_address = self.generate_email_address(surname, forename)
+
         new_student = {
             "surname": surname.strip().title(),
             "forename": forename.strip().title(),
