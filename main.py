@@ -7,6 +7,7 @@ from colorama import init as init_colorama
 import inputs
 from accounts import AccountsDatabase
 from menu import Menu, Option, Submenu, bold, color, error_incorrect_input, print_hint
+from students import StudentsDatabase
 
 
 def log_in():
@@ -56,7 +57,6 @@ def create_account():
     password_hash = inputs.new_password("Set your password: ")
 
     accounts_database.add_account(username, password_hash)
-    accounts_database.save()
     print()
     print(f"Created a new account called {bold(username)}")
 
@@ -69,11 +69,23 @@ def register_student():
     home_address = inputs.multiline("Home address: ")
     home_phone = inputs.phone_number("Home phone number: ")
 
+    student = students_database.add_student(surname, forename, birthday,
+                                            home_address, home_phone,
+                                            tutor_group)
+
+    print()
+    name_formatted = bold(f"{student['forename']} {student['surname']}")
+    print(f"Registered student {name_formatted} with details:")
+    # mention email etc
+
 
 # Initialise the Colorama libary for terminal formatting utils
 init_colorama()
 
+# Initialise the JSON databases
 accounts_database = AccountsDatabase()
+students_database = StudentsDatabase()
+
 current_account = None  # Store the account that is currently signed in
 
 main_menu = Menu(

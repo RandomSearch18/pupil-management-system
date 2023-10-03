@@ -8,8 +8,8 @@ class StudentsDatabase(JSONDatabase):
     def __init__(self):
         super().__init__("students.json", [])
 
-    def get_student(self, id: int | None,
-                    email_address: str | None) -> dict | None:
+    def get_student(self, id: int | None = None,
+                    email_address: str | None = None) -> dict | None:
         """Looks up a student using the provided unique identifier(s)
         
         - The student's ID and/or email address can be provided as search criteria
@@ -23,6 +23,26 @@ class StudentsDatabase(JSONDatabase):
                 return student
         return None
 
+    def next_id(self):
+        return len(self.data) + 1
+
+    def generate_email_address(self, surname, forename, discriminator: int = 0):
+        domain = "tree-road.edu"
+        surname_part = surname.lower()
+        forename_part = forename.lower()[0]
+        # If the discriminator is 0, don't include it at all:
+        discriminator_part = str(discriminator) if discriminator else ""
+        
+        possible_email = f"{surname_part}{forename_part}@{domain}"
+
+        # Check if the addresss is taken
+        if self.get_student(email_address=possible_email):
+            # Increment the discriminator 
+            discriminator = discriminator + 1
+            return self.generate_email_address(surname, forename, discriminator)
+
+        return possible_email
+
     def add_student(self, surname: str, forename: str, birthday: datetime.date,
                     home_address: str, home_phone: str, tutor_group: str):
         """Creates a dictionary to repsresnt a new student and adds it to the database.
@@ -35,6 +55,8 @@ class StudentsDatabase(JSONDatabase):
         - Returns the directory of the student's data
         """
 
+        email_address =
+        
         new_student = {
             "surname": surname.strip().title(),
             "forename": forename.strip().title(),
@@ -42,6 +64,8 @@ class StudentsDatabase(JSONDatabase):
             "tutor_group": tutor_group.strip().upper(),
             "home_address": home_address,
             "home_phone": home_phone,
+            "id": self.next_id(),
+            "school_email": email_address
         }
         self.data.append(new_student)
         self.save()
