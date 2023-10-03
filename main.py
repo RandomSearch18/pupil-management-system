@@ -62,6 +62,10 @@ def create_account():
 
 
 def register_student():
+    """Asks the user to input the data for a new student
+    
+    - Doesn't ask for email or ID as those are generated
+    - Adds the student to the database"""
     forename = inputs.name("Forename: ")
     surname = inputs.name("Surname: ")
     birthday = inputs.date(f"Birthday: {color('(YYYY-MM-DD)', Style.DIM)} ")
@@ -73,11 +77,14 @@ def register_student():
                                             home_address, home_phone,
                                             tutor_group)
 
+    # Print the details that we generated
     print()
     name_formatted = bold(f"{student['forename']} {student['surname']}")
+    email_formatted = bold(student['school_email'])
+    id_formatted = bold(student['id'])
     print(f"Registered student \"{name_formatted}\"")
-    print(f"School email address: {student['school_email']}")
-    print(f"ID number: {student['id']}")
+    print(f"School email address: {email_formatted}")
+    print(f"ID number: {id_formatted}")
 
 
 # Initialise the Colorama libary for terminal formatting utils

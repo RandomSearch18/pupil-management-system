@@ -51,7 +51,13 @@ def text(prompt, error_message="Enter some text") -> str:
     return stripped_input
 
 
-def multiline(prompt):
+def multiline(prompt, error_message: str = "Enter some text"):
+    """Asks the user to input text, allowing line breaks
+    
+    - This essentially fakes a multiline input by calling input() in a loop
+    - It validates that some text was entered
+    - Pressing enter on an empty line submits the input
+    """
     print(prompt + color(
         "(Enter to insert newlines; press Enter twice to submit)", Style.DIM))
 
@@ -65,6 +71,12 @@ def multiline(prompt):
         lines.append(line)
 
     full_input = "\n".join(lines)
+
+    # Validate that they actually entered something
+    if full_input.strip() == "":
+        error_incorrect_input(error_message)
+        return multiline(prompt, error_message)
+
     return full_input
 
 
