@@ -16,8 +16,20 @@ def print_hint(hint: str):
     print(color(hint, Style.DIM))
 
 
+def info_line(field: str, data):
+    """Prints a piece of data with a label (on a single line)
+    
+    - The field is the label for the data
+    - The data parameter is the actual data, e.g. a number or a string
+    - Formats the content to be bold
+    """
+    label_part = f"{field.strip()}: "
+    content_part = bold(str(data))
+    print(label_part + content_part)
+
+
 def bold(string: str) -> str:
-    """Makse the provided string bold, using ANSI escape codes"""
+    """Makes the provided string bold, using ANSI escape codes"""
     return color(string, Style.BRIGHT)
 
 

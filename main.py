@@ -6,7 +6,7 @@ from colorama import init as init_colorama
 
 import inputs
 from accounts import AccountsDatabase
-from menu import Menu, Option, Submenu, bold, color, error_incorrect_input, print_hint
+from menu import Menu, Option, Submenu, bold, color, error_incorrect_input, print_hint, info_line
 from students import StudentsDatabase
 
 
@@ -79,12 +79,11 @@ def register_student():
 
     # Print the details that we generated
     print()
-    name_formatted = bold(f"{student['forename']} {student['surname']}")
-    email_formatted = bold(student['school_email'])
-    id_formatted = bold(student['id'])
-    print(f"Registered student \"{name_formatted}\"")
-    print(f"School email address: {email_formatted}")
-    print(f"ID number: {id_formatted}")
+    print(
+        f"Registered student {bold(student['full_name'])} (ID #{student['id']})"
+    )
+    info_line("School email address", student['school_email'])
+    info_line("ID number", student['id'])
 
 
 def log_out():

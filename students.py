@@ -1,4 +1,5 @@
 import datetime
+from menu import info_line
 
 from util import JSONDatabase
 
@@ -61,6 +62,7 @@ class StudentsDatabase(JSONDatabase):
         """
 
         email_address = self.generate_email_address(surname, forename)
+        full_name = " ".join([forename, surname])
 
         new_student = {
             "surname": surname.strip().title(),
@@ -70,8 +72,16 @@ class StudentsDatabase(JSONDatabase):
             "home_address": home_address,
             "home_phone": home_phone,
             "id": self.next_id(),
-            "school_email": email_address
+            "school_email": email_address,
+            "full_name": full_name,
         }
         self.data.append(new_student)
         self.save()
         return new_student
+
+    def display_student_info(self, student):
+        birthday = datetime.date.fromisoformat(student["birthday"])
+
+        info_line("Surname", student["surname"])
+        info_line("Forename", student["forename"])
+        info_line("Birthday", birthday.strftime("%x"))
