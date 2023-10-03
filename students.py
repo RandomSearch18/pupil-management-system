@@ -37,7 +37,7 @@ class StudentsDatabase(JSONDatabase):
         # If the discriminator is 0, don't include it at all:
         discriminator_part = str(discriminator) if discriminator else ""
 
-        possible_email = f"{surname_part}{forename_part}@{domain}"
+        possible_email = f"{surname_part}{forename_part}{discriminator_part}@{domain}"
 
         # Check if the addresss is taken
         if self.get_student(email_address=possible_email):
