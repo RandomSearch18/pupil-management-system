@@ -129,6 +129,13 @@ class Submenu(MenuItem):
 
 
 class Menu:
+    def uses_descriptions(self) -> bool:
+        """Returns True if any of the menu items have descriptions"""
+        for item in self.options:
+            if item.description:
+                return True
+        return False
+
 
     def show(self, loop=False):
         """Shows the menu to the user. It displays a list of possible actions and lets the user pick one of them.
@@ -150,16 +157,30 @@ class Menu:
             print(color("No options available. Goodbye!", Fore.RED))
             return
 
+        # If any of the items have descriptions, we add an empty line between each option
+        # for readability.
+        use_extra_linebreaks = self.uses_descriptions()
+
         if self.title:
-            print(self.title)
+            print(bold(self.title))
+            if use_extra_linebreaks:
+                # Padding between title and options
+                print()
 
         # Print each option on its own line
         for i, option in enumerate(relevant_options):
-            if option.description:
+            if use_extra_linebreaks and i > 0:
+                # Padding betweem each option
                 print()
+
+            if option.description:
                 print_hint(option.description)
 
             print(f"{i+1}) {option.label}")
+
+        if use_extra_linebreaks:
+            # Padding between options and selection input
+            print()
 
         # Ask the user to select a option number
         selection = get_selection(len(relevant_options))
