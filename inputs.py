@@ -37,7 +37,7 @@ def valid_utf8(prompt):
 
 def text(prompt, error_message="Enter some text") -> str:
     """Asks the user for input that contains some text content.
-    
+
     - Ensures that they've entered at least 1 non-whitespace character
     - Removes leading/trailing whitespace
     - Normalizes the unicode characters (composed and canonical form)
@@ -53,13 +53,15 @@ def text(prompt, error_message="Enter some text") -> str:
 
 def multiline(prompt, error_message: str = "Enter some text"):
     """Asks the user to input text, allowing line breaks
-    
+
     - This essentially fakes a multiline input by calling input() in a loop
     - It validates that some text was entered
     - Pressing enter on an empty line submits the input
     """
-    print(prompt + color(
-        "(Enter to insert newlines; press Enter twice to submit)", Style.DIM))
+    print(
+        prompt
+        + color("(Enter to insert newlines; press Enter twice to submit)", Style.DIM)
+    )
 
     lines = []
     while True:
@@ -78,6 +80,18 @@ def multiline(prompt, error_message: str = "Enter some text"):
         return multiline(prompt, error_message)
 
     return full_input
+
+
+def integer(prompt, error_message: str = "Enter a valid whole number") -> int:
+    """Asks for a valid integer to be input"""
+    raw_input = text(prompt, "Enter at least 1 digit")
+    try:
+        int_input = int(raw_input)
+    except ValueError:
+        error_incorrect_input(error_message)
+        return integer(prompt, error_message)
+
+    return int_input
 
 
 def new_username(prompt) -> str:
@@ -108,9 +122,9 @@ def password_to_hash(raw_password: str) -> str:
     return b64encode(hash).decode("utf-8")
 
 
-def password(prompt,
-             error_message="Enter a password to authenticate",
-             hide_characters=True):
+def password(
+    prompt, error_message="Enter a password to authenticate", hide_characters=True
+):
     """Uses the getpass module to prevent the typed text being echoed,
     helping limit the effectiveness of sholder-surfing.
     This behaviour can be disabled by setting hide_characters=False."""
@@ -128,12 +142,12 @@ def password(prompt,
 def new_password(prompt, hide_characters=True):
     """A password must be at least 1 character, but has no other limitations.
     Returns a hashed and salted version of the password.
-    By default, the typed text will be hidden from the user, but this can be disabled by setting hide_characters=False"""
+    By default, the typed text will be hidden from the user, but this can be disabled by setting hide_characters=False
+    """
     error_message = "Enter a password to keep your account secure"
 
     if not hide_characters:
-        return password_to_hash(
-            password(prompt, error_message, hide_characters=False))
+        return password_to_hash(password(prompt, error_message, hide_characters=False))
 
     return password_to_hash(password(prompt, error_message))
 
@@ -172,7 +186,7 @@ def date(prompt) -> datetime.date:
 
 def tutor_group(prompt):
     """Prompts the user to input a tutor group
-    
+
     - Normalises the returned tutor group to be in uppercase
     - Checks that the input's in the format of a tutor group
     - Doesn't check that the input is a sutor group that actually exists
@@ -196,8 +210,7 @@ def phone_number(prompt):
     try:
         parsed_phone_number = phonenumbers.parse(raw_input, "GB")
     except NumberParseException:
-        error_incorrect_input(
-            "Enter a phone number (UK or international format)")
+        error_incorrect_input("Enter a phone number (UK or international format)")
         return phone_number(prompt)
 
     if not phonenumbers.is_possible_number(parsed_phone_number):
@@ -205,5 +218,6 @@ def phone_number(prompt):
         return phone_number(prompt)
 
     serialized_phone_number = phonenumbers.format_number(
-        parsed_phone_number, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+        parsed_phone_number, phonenumbers.PhoneNumberFormat.INTERNATIONAL
+    )
     return serialized_phone_number

@@ -24,7 +24,8 @@ def log_in():
 
     if not matching_user:
         error_incorrect_input(
-            f"No account exists with the username {bold(target_username)}")
+            f"No account exists with the username {bold(target_username)}"
+        )
         return log_in()
 
     is_authenticated = accounts_database.authenticate_user(target_username)
@@ -42,7 +43,8 @@ def ask_for_new_username(show_tip=True) -> str:
     matching_user = accounts_database.get_account(username)
     if matching_user:
         error_incorrect_input(
-            f"There's already an account with the username {bold(username)}")
+            f"There's already an account with the username {bold(username)}"
+        )
         if show_tip:
             print_hint("Tip: Pick another username or try logging in instead.")
 
@@ -59,9 +61,9 @@ def create_account():
 
     print_hint(
         "Your password is a secret phrase that you'll use to prove who you are when you log in."
-        + " It cannot be reset, so keep it safe!")
-    print_hint(
-        "Note: You won't be able to see your password while you're typing it.")
+        + " It cannot be reset, so keep it safe!"
+    )
+    print_hint("Note: You won't be able to see your password while you're typing it.")
     password_hash = inputs.new_password("Set your password: ")
 
     accounts_database.add_account(username, password_hash)
@@ -71,7 +73,7 @@ def create_account():
 
 def register_student():
     """Asks the user to input the data for a new student
-    
+
     - Doesn't ask for email or ID as those are generated
     - Adds the student to the database"""
     forename = inputs.name("Forename: ")
@@ -81,17 +83,15 @@ def register_student():
     home_address = inputs.multiline("Home address: ")
     home_phone = inputs.phone_number("Home phone number: ")
 
-    student = students_database.add_student(surname, forename, birthday,
-                                            home_address, home_phone,
-                                            tutor_group)
+    student = students_database.add_student(
+        surname, forename, birthday, home_address, home_phone, tutor_group
+    )
 
     # Print the details that we generated
     print()
-    print(
-        f"Registered student {bold(student['full_name'])} (ID #{student['id']})"
-    )
-    info_line("School email address", student['school_email'])
-    info_line("ID number", student['id'])
+    print(f"Registered student {bold(student['full_name'])} (ID #{student['id']})")
+    info_line("School email address", student["school_email"])
+    info_line("ID number", student["id"])
 
 
 def log_out():
@@ -102,6 +102,24 @@ def log_out():
     old_username = current_account["username"]
     current_account = None
     print(f"Logged out of account {bold(old_username)}")
+
+
+def show_student_info():
+    global current_account
+
+    print_hint(
+        "Each student has a numerical ID that is used to uniquely identify them."
+    )
+    target_id = inputs.integer("Enter unique ID: ")
+
+    matching_student = students_database.get_student(id=target_id)
+
+    if not matching_student:
+        error_incorrect_input(f"No students with the ID {bold(target_id)}")
+        return show_student_info()
+
+    print()
+    students_database.display_student_info(matching_student)
 
 
 # Initialise the Colorama libary for terminal formatting utils
@@ -118,12 +136,18 @@ main_menu = Menu(
     options=[
         Option("Log in", log_in, lambda: not current_account),
         Option("Create account", create_account, lambda: not current_account),
-        Option("Register new student", register_student,
-               lambda: bool(current_account)),
+        Option("Register new student", register_student, lambda: bool(current_account)),
+        Option(
+            "Get a student's details",
+            show_student_info,
+            lambda: students_database.get_students(current_account),
+        ),
         Option("Log out", log_out, lambda: bool(current_account)),
-        Submenu("Go to the sub menu", "Sub-menu",
-                [Option("Log in 1", log_in),
-                 Option("Log in 2", log_in)])
+        Submenu(
+            "Go to the sub menu",
+            "Sub-menu",
+            [Option("Log in 1", log_in), Option("Log in 2", log_in)],
+        ),
     ],
 )
 

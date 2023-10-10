@@ -49,6 +49,14 @@ class StudentsDatabase(JSONDatabase):
 
         return possible_email
 
+    def get_students(self, current_account) -> list[dict]:
+        """Returns a list of all the students"""
+        # TODO: In the future, we can only return students that are akkiwed to be accessed by the current user.
+        if not current_account:
+            # Users that aren't signed in don't get to access student data
+            return []
+        return self.data.copy()
+
     def add_student(self, surname: str, forename: str, birthday: datetime.date,
                     home_address: str, home_phone: str, tutor_group: str):
         """Creates a dictionary to repsresnt a new student and adds it to the database.
