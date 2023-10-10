@@ -1,4 +1,5 @@
 import datetime
+from typing import Callable
 
 from colorama import Style
 from menu import bold, color, info_line
@@ -6,18 +7,30 @@ from menu import bold, color, info_line
 from util import JSONDatabase
 
 
-class StudentsDatabase(JSONDatabase):
+class StudentsReport:
+    def __init__(
+        self, students: list[dict], filter_function: Callable[[list[dict]], list[dict]]
+    ):
+        self.students = students
+        self.filter = filter_function
+    
+    def get_matching_students(self) -> list[dict]:
+        matching_students = filter(self.filter, self.students)
+        return matching_students
+        
 
+
+class StudentsDatabase(JSONDatabase):
     def __init__(self):
         super().__init__("students.json", [])
 
-    def get_student(self,
-                    id: int | None = None,
-                    email_address: str | None = None) -> dict | None:
+    def get_student(
+        self, id: int | None = None, email_address: str | None = None
+    ) -> dict | None:
         """Looks up a student using the provided unique identifier(s)
-        
+
         - The student's ID and/or email address can be provided as search criteria
-        - If more than one datapoint is provided, the ID takes precedence 
+        - If more than one datapoint is provided, the ID takes precedence
         - Returns a dictionary of the student's data
         """
         for student in self.data:
@@ -30,10 +43,7 @@ class StudentsDatabase(JSONDatabase):
     def next_id(self):
         return len(self.data) + 1
 
-    def generate_email_address(self,
-                               surname,
-                               forename,
-                               discriminator: int = 0):
+    def generate_email_address(self, surname, forename, discriminator: int = 0):
         domain = "tree-road.edu"
         surname_part = surname.lower()
         forename_part = forename.lower()[0]
@@ -46,8 +56,7 @@ class StudentsDatabase(JSONDatabase):
         if self.get_student(email_address=possible_email):
             # Increment the discriminator
             discriminator = discriminator + 1
-            return self.generate_email_address(surname, forename,
-                                               discriminator)
+            return self.generate_email_address(surname, forename, discriminator)
 
         return possible_email
 
@@ -59,8 +68,15 @@ class StudentsDatabase(JSONDatabase):
             return []
         return self.data.copy()
 
-    def add_student(self, surname: str, forename: str, birthday: datetime.date,
-                    home_address: str, home_phone: str, tutor_group: str):
+    def add_student(
+        self,
+        surname: str,
+        forename: str,
+        birthday: datetime.date,
+        home_address: str,
+        home_phone: str,
+        tutor_group: str,
+    ):
         """Creates a dictionary to repsresnt a new student and adds it to the database.
 
         - A unique numerical ID is generated for the student, as well as a unique school email address

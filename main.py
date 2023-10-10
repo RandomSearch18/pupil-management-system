@@ -142,12 +142,13 @@ main_menu = Menu(
             show_student_info,
             lambda: students_database.get_students(current_account),
         ),
-        Option("Log out", log_out, lambda: bool(current_account)),
         Submenu(
-            "Go to the sub menu",
-            "Sub-menu",
-            [Option("Log in 1", log_in), Option("Log in 2", log_in)],
+            "View student reports",
+            "Chose a report to view",
+            [Option("Birthdays today", log_in)],
+            should_show=lambda: bool(current_account),
         ),
+        Option("Log out", log_out, lambda: bool(current_account)),
     ],
 )
 
