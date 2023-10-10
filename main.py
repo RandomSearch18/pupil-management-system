@@ -1,12 +1,20 @@
 """Mr Leeman's System: A pupil management system for Tree Road School
 This code is for Task 3 of the lesson 2.2.1 Programming fundamentals - validation"""
-
 from colorama import Style
 from colorama import init as init_colorama
 
 import inputs
 from accounts import AccountsDatabase
-from menu import Menu, Option, Submenu, bold, color, error_incorrect_input, print_hint, info_line
+from menu import (
+    Menu,
+    Option,
+    Submenu,
+    bold,
+    color,
+    error_incorrect_input,
+    info_line,
+    print_hint,
+)
 from students import StudentsDatabase
 
 
