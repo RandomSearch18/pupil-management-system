@@ -74,14 +74,17 @@ class MenuItem:
 
     def __init__(self,
                  label: str,
-                 should_show: Optional[Callable[[], bool]] = None):
+                 should_show: Optional[Callable[[], bool]] = None,
+                 description: Optional[str] = None):
         """A menu item is a single action that the user can select from a menu.
         label: The line of text that will be shown in the menu to represent the option
         should_show: An optional function that can return False to prevent the item from being included in the menu.
                      Useful for items that only make sense at certain times, e.g. to only show "Log out" if a user is logged in.
+        description: An optional piece of text that will be shown (desaturated) above the option to provide additional context.
         """
         self.label = label
         self.should_show = should_show
+        self.description = description
 
     def execute(self):
         pass
@@ -92,12 +95,13 @@ class Option(MenuItem):
     def __init__(self,
                  label: str,
                  callback: Callable,
-                 should_show: Optional[Callable[[], bool]] = None):
+                 should_show: Optional[Callable[[], bool]] = None,
+                 description: Optional[str] = None):
         """Create a menu item that can be added to menu.
         name: The text that is shown to the user, in the menu
         callback: The function to run when the user selects the option
         """
-        super().__init__(label, should_show)
+        super().__init__(label, should_show, description)
         self.callback = callback
 
     def execute(self):
@@ -151,6 +155,10 @@ class Menu:
 
         # Print each option on its own line
         for i, option in enumerate(relevant_options):
+            if option.description:
+                print()
+                print_hint(option.description)
+
             print(f"{i+1}) {option.label}")
 
         # Ask the user to select a option number

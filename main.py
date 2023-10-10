@@ -15,6 +15,7 @@ from menu import (
     info_line,
     print_hint,
 )
+from reports import reports_menu
 from students import StudentsDatabase
 
 
@@ -141,12 +142,10 @@ main_menu = Menu(
             "Get a student's details",
             show_student_info,
             lambda: students_database.get_students(current_account),
-        ),
-        Submenu(
+        ), 
+        Option(
             "View student reports",
-            "Choose a report to view",
-            
-            [Option("Birthdays this month", students_database.report_birthday_this_month.display)],
+            reports_menu,
             should_show=lambda: bool(current_account),
         ),
         Option("Log out", log_out, lambda: bool(current_account)),
