@@ -1,5 +1,5 @@
 import datetime
-from typing import Callable
+from typing import Callable, Optional
 
 from colorama import Style
 from menu import bold, color, info_line
@@ -25,8 +25,8 @@ class StudentsDatabase(JSONDatabase):
         super().__init__("students.json", [])
 
     def get_student(
-        self, id: int | None = None, email_address: str | None = None
-    ) -> dict | None:
+        self, id: Optional[int] = None, email_address: Optional[str] = None
+    ) -> Optional[dict]:
         """Looks up a student using the provided unique identifier(s)
 
         - The student's ID and/or email address can be provided as search criteria

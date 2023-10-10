@@ -38,7 +38,7 @@ def color(string: str, color: str) -> str:
     return f"{color}{string}{Style.RESET_ALL}"
 
 
-def get_selection(max: int) -> int | None:
+def get_selection(max: int) -> Optional[int]:
     """Asks the user to pick a 1-indexed number up to (and including) `max`,
     returing it as zero-indexed."""
     try:

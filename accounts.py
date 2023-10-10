@@ -1,3 +1,4 @@
+from typing import Optional
 from colorama import Style
 
 import inputs
@@ -10,7 +11,7 @@ class AccountsDatabase(JSONDatabase):
     def __init__(self):
         super().__init__("accounts.json", [])
 
-    def get_account(self, username: str) -> dict | None:
+    def get_account(self, username: str) -> Optional[dict]:
         for account in self.data:
             if username and account["username"] == username:
                 return account
