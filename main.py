@@ -134,7 +134,7 @@ current_account = None  # Store the account that is currently signed in
 main_menu = Menu(
     title="Mr Leeman's system",
     options=[
-        Option("Log in", log_in, lambda: not current_account),
+        Option("Log in", log_in, lambda: not current_account and accounts_database.data),
         Option("Create account", create_account, lambda: not current_account),
         Option("Register new student", register_student, lambda: bool(current_account)),
         Option(

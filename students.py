@@ -13,11 +13,10 @@ class StudentsReport:
     ):
         self.students = students
         self.filter = filter_function
-    
+
     def get_matching_students(self) -> list[dict]:
         matching_students = filter(self.filter, self.students)
         return matching_students
-        
 
 
 class StudentsDatabase(JSONDatabase):
