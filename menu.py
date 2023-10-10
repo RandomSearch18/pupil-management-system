@@ -28,6 +28,12 @@ def info_line(field: str, data):
     print(label_part + content_part)
 
 
+def clear():
+    """Clears the screen/terminal (preserving scrollback)"""
+    # https://stackoverflow.com/a/50560686
+    print("\033[H\033[J", end="")
+
+
 def bold(string: str) -> str:
     """Makes the provided string bold, using ANSI escape codes"""
     return color(string, Style.BRIGHT)
@@ -156,9 +162,12 @@ class Menu:
         if len(relevant_options) == 0:
             print(color("No options available. Goodbye!", Fore.RED))
             return
+        
+        print("AAA")
+        clear()
 
-        # If any of the items have descriptions, we add an empty line between each option
-        # for readability.
+        # If any of the items have descriptions, we add more padding (line breaks) to the menu
+        # to keep it readable and to seperate out the options.
         use_extra_linebreaks = self.uses_descriptions()
 
         if self.title:
@@ -198,7 +207,6 @@ class Menu:
         if not loop:
             return
 
-        print("\n")
         self.show(loop)
 
     def __init__(self, options: list[MenuItem], title: Optional[str] = None):
