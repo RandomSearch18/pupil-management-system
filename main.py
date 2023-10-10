@@ -144,8 +144,9 @@ main_menu = Menu(
         ),
         Submenu(
             "View student reports",
-            "Chose a report to view",
-            [Option("Birthdays today", log_in)],
+            "Choose a report to view",
+            
+            [Option("Birthdays this month", students_database.report_birthday_this_month.display)],
             should_show=lambda: bool(current_account),
         ),
         Option("Log out", log_out, lambda: bool(current_account)),

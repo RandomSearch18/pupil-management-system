@@ -9,19 +9,37 @@ from util import JSONDatabase
 
 class StudentsReport:
     def __init__(
-        self, students: list[dict], filter_function: Callable[[list[dict]], list[dict]]
+        self, students: list[dict], filter_function: Callable[[list[dict]], bool], title: str
     ):
         self.students = students
         self.filter = filter_function
+        self.title = title
 
     def get_matching_students(self) -> list[dict]:
         matching_students = filter(self.filter, self.students)
         return matching_students
+    
+    def display(self):
+        """Prints the report's contents, with nice formatting"""
+        students = self.get_matching_students()
+        print(bold(self.title))
+        for i, student in enumerate(students):
+            index = i + 1
+            index_part = color(f"{index:3})", Style.DIM)
+            name_part = student["full_name"]
+            print(f"{index_part} {name_part}")
 
 
 class StudentsDatabase(JSONDatabase):
     def __init__(self):
         super().__init__("students.json", [])
+
+        def report_birthday_this_month(student):
+            birthday = datetime.date.fromisoformat(student["birthday"])
+            return birthday.month == datetime.date.today().month
+
+
+        self.report_birthday_this_month = StudentsReport(self.data, report_birthday_this_month, "Birthdays this month")
 
     def get_student(
         self, id: Optional[int] = None, email_address: Optional[str] = None
@@ -115,3 +133,4 @@ class StudentsDatabase(JSONDatabase):
         info_line("Tutor group", student["tutor_group"])
         info_line("Home phone number", student["home_phone"])
         info_line("School email address", student["school_email"])
+
