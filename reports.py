@@ -28,10 +28,14 @@ def display_report(
     wait_for_enter_key()
 
 
-def birthday_this_month(student):
-    """Checks if the provided student's birthday is this month"""
+def upcoming_birthday(student):
+    """Checks if the provided student's birthday is coming up in the next 30 days"""
     birthday = date.fromisoformat(student["birthday"])
-    return birthday.month == date.today().month
+    birthday_this_year = birthday.replace(year=date.today().year)
+
+    time_until_birthday = birthday_this_year - date.today()
+    # Lower bound to ensure birthday hasn't already passed
+    return 0 <= time_until_birthday.days <= 30
 
 
 class ReportsMenu:
@@ -64,12 +68,12 @@ class ReportsMenu:
         menu = Menu(
             [
                 self.report_option(
-                    "Birthdays this month",
-                    birthday_this_month,
+                    "Upcoming birthdays",
+                    upcoming_birthday,
                     suffixes=[
                         lambda student: f"({iso_to_locale_string(student['birthday'])})"
                     ],
-                    description="A list of students whose birthdays are in the next 10 days. "
+                    description="A list of students whose birthdays are in the next 30 days. "
                     + "This can be used to add upcoming birthdays to a noticeboard, or simply wish your students a happy birthday.",
                 ),
                 Option(
