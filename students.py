@@ -9,7 +9,7 @@ from util import JSONDatabase
 
 class StudentsDatabase(JSONDatabase):
     def __init__(self):
-        super().__init__("students.json", [])
+        super().__init__("students.json", [], "students-bootstrap.json")
 
     def get_student(
         self, id: Optional[int] = None, email_address: Optional[str] = None
