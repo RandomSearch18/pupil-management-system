@@ -3,8 +3,12 @@ from colorama import Style
 from menu import Menu, Option, bold, clear_screen, color
 from datetime import date
 
+from util import iso_to_locale_string
 
-def display_report(students: list[dict], title: str, extra_attributes: list[str]):
+
+def display_report(
+    students: list[dict], title: str, suffixes: list[Callable[[dict], str]]
+):
     """Prints the students in a report, with nice formatting"""
     clear_screen()
     print(bold(title))
@@ -15,13 +19,10 @@ def display_report(students: list[dict], title: str, extra_attributes: list[str]
         index_part = color(f"{index:3})", Style.DIM)
         name_part = student["full_name"]
 
-        extra_part = ""
-        for attribute in extra_attributes:
-            # Mention each extra attribute after the full name
-            data = student[attribute]
-            extra_part += color(f" ({data})", Style.DIM)
+        suffix = [callback(student) for callback in suffixes]
+        suffix_part = color(" ".join(suffix), Style.DIM) if suffix else ""
 
-        print(f"{index_part} {name_part}{extra_part}")
+        print(" ".join([index_part, name_part, suffix_part]))
 
     print()
     input(color("Press Enter to continue...", Style.DIM))
@@ -41,23 +42,21 @@ class ReportsMenu:
         self,
         filter_callback: Callable[[dict], bool],
         title: str,
-        extra_attributes: list[str],
+        suffixes: list[Callable[[dict], str]],
     ):
         chosen_students = filter(filter_callback, self.students)
-        display_report(chosen_students, title, extra_attributes)
+        display_report(chosen_students, title, suffixes)
 
     def report_option(
         self,
         title: str,
         filter_callback: Callable[[dict], bool],
         description: str,
-        extra_attributes: list[str] = [],
+        suffixes: list[Callable[[dict], str]] = [],
     ):
         return Option(
             title,
-            lambda: self.generate_and_show_report(
-                filter_callback, title, extra_attributes
-            ),
+            lambda: self.generate_and_show_report(filter_callback, title, suffixes),
             description=description,
         )
 
@@ -67,8 +66,11 @@ class ReportsMenu:
                 self.report_option(
                     "Birthdays this month",
                     birthday_this_month,
-                    extra_attributes=["birthday"],
-                    description="A list of students whose birthdays are in the next 10 days. This can be used to add upcoming birthdays to a noticeboard, or simply wish your students a happy birthday.",
+                    suffixes=[
+                        lambda student: f"({iso_to_locale_string(student['birthday'])})"
+                    ],
+                    description="A list of students whose birthdays are in the next 10 days. "
+                    + "This can be used to add upcoming birthdays to a noticeboard, or simply wish your students a happy birthday.",
                 ),
                 Option(
                     "Alphabetical order",

@@ -8,7 +8,6 @@ from accounts import AccountsDatabase
 from menu import (
     Menu,
     Option,
-    Submenu,
     bold,
     color,
     error_incorrect_input,

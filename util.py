@@ -4,6 +4,7 @@ import json
 from base64 import b64decode, b64encode
 from pathlib import Path
 from typing import Any, Callable, Optional
+from datetime import date
 
 
 def check_password(inputted_password: str, correct_password_hash: str):
@@ -85,3 +86,9 @@ def get_file(file_path: Path, mode="r"):
         file.close()
 
         return open(file_path, mode)
+
+def iso_to_locale_string(iso_date: str):
+    """Parses an ISO-formatted date, and returns it formatted using the system locale"""
+    parsed_date = date.fromisoformat(iso_date)
+    locale_formatted_date = parsed_date.strftime("%x")
+    return locale_formatted_date

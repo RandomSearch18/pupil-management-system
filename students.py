@@ -4,7 +4,7 @@ from typing import Optional
 from colorama import Style
 from menu import bold, color, info_line
 
-from util import JSONDatabase
+from util import JSONDatabase, iso_to_locale_string
 
 
 class StudentsDatabase(JSONDatabase):
@@ -93,13 +93,12 @@ class StudentsDatabase(JSONDatabase):
         return new_student
 
     def display_student_info(self, student):
-        birthday = datetime.date.fromisoformat(student["birthday"])
         formatted_id = color(f"(#{student['id']})", Style.DIM)
 
         print(f"Details for {bold(student['full_name'])} {formatted_id}")
         info_line("Surname", student["surname"])
         info_line("Forename", student["forename"])
-        info_line("Birthday", birthday.strftime("%x"))
+        info_line("Birthday", iso_to_locale_string(student["birthday"]))
         info_line("Tutor group", student["tutor_group"])
         info_line("Home phone number", student["home_phone"])
         info_line("School email address", student["school_email"])
