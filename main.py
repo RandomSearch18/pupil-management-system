@@ -15,7 +15,7 @@ from menu import (
     info_line,
     print_hint,
 )
-from reports import reports_menu
+from reports import ReportsMenu
 from students import StudentsDatabase
 
 
@@ -123,6 +123,11 @@ def show_student_info():
     students_database.display_student_info(matching_student)
 
 
+def view_reports():
+    reports_menu = ReportsMenu(students_database.get_students(current_account))
+    reports_menu.show()
+
+
 # Initialise the Colorama libary for terminal formatting utils
 init_colorama()
 
@@ -145,7 +150,7 @@ main_menu = Menu(
         ), 
         Option(
             "View student reports",
-            reports_menu,
+            view_reports,
             should_show=lambda: bool(current_account),
         ),
         Option("Log out", log_out, lambda: bool(current_account)),

@@ -1,5 +1,4 @@
 import datetime
-import hashlib
 import unicodedata
 from base64 import b64encode
 from getpass import getpass

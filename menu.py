@@ -28,7 +28,7 @@ def info_line(field: str, data):
     print(label_part + content_part)
 
 
-def clear():
+def clear_screen():
     """Clears the screen/terminal (preserving scrollback)"""
     # https://stackoverflow.com/a/50560686
     print("\033[H\033[J", end="")
@@ -164,7 +164,7 @@ class Menu:
             return
         
         print("AAA")
-        clear()
+        clear_screen()
 
         # If any of the items have descriptions, we add more padding (line breaks) to the menu
         # to keep it readable and to seperate out the options.
