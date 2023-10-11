@@ -34,6 +34,11 @@ def clear_screen():
     print("\033[H\033[J", end="")
 
 
+def wait_for_enter_key():
+    """Pauses the terminal, i.e. waits for the user to press Enter before continuing"""
+    input(color("Press Enter to continue...", Style.DIM))
+
+
 def bold(string: str) -> str:
     """Makes the provided string bold, using ANSI escape codes"""
     return color(string, Style.BRIGHT)

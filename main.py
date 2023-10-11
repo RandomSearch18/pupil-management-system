@@ -13,6 +13,7 @@ from menu import (
     error_incorrect_input,
     info_line,
     print_hint,
+    wait_for_enter_key,
 )
 from reports import ReportsMenu
 from students import StudentsDatabase
@@ -69,6 +70,7 @@ def create_account():
     accounts_database.add_account(username, password_hash)
     print()
     print(f"Created a new account called {bold(username)}")
+    wait_for_enter_key()
 
 
 def register_student():
@@ -92,6 +94,8 @@ def register_student():
     print(f"Registered student {bold(student['full_name'])} (ID #{student['id']})")
     info_line("School email address", student["school_email"])
     info_line("ID number", student["id"])
+    print()
+    wait_for_enter_key()
 
 
 def log_out():
@@ -120,6 +124,7 @@ def show_student_info():
 
     print()
     students_database.display_student_info(matching_student)
+    wait_for_enter_key()
 
 
 def view_reports():
