@@ -1,5 +1,6 @@
 from typing import Callable
 from colorama import Style
+from inputs import text
 from menu import Menu, Option, bold, clear_screen, color, wait_for_enter_key
 from datetime import date
 
@@ -36,6 +37,14 @@ def upcoming_birthday(student):
     time_until_birthday = birthday_this_year - date.today()
     # Lower bound to ensure birthday hasn't already passed
     return 0 <= time_until_birthday.days <= 30
+
+
+def surname_begins_with(student, substring: str) -> bool:
+    return bool(student["surname"].lower().startswith(substring))
+
+
+def input_starting_letters(names_type: str) -> str:
+    return text(f"Include {names_type} that start with: ").lower()
 
 
 class ReportsMenu:
@@ -76,10 +85,12 @@ class ReportsMenu:
                     description="A list of students whose birthdays are in the next 30 days. "
                     + "This can be used to add upcoming birthdays to a noticeboard, or simply wish your students a happy birthday.",
                 ),
-                Option(
-                    "Alphabetical order",
-                    input,
-                    description="TODO: Write another explanation!",
+                self.report_option(
+                    "Surnames starting with...",
+                    lambda student: surname_begins_with(
+                        student, input_starting_letters("suranmes")
+                    ),
+                    description="Lists students in alphabetica",
                 ),
             ],
             "Choose a report to view",
