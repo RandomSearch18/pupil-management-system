@@ -1,42 +1,36 @@
 from typing import Callable
 from colorama import Style
 from inputs import text
-from menu import Menu, Option, bold, clear_screen, color, wait_for_enter_key
+from menu import Menu, Option, bold, color, wait_for_enter_key
 from datetime import date
 
 from util import iso_to_locale_string
 
 
-def display_report(
-    students: list[dict], title: str, suffixes: list[Callable[[dict], str]]
-):
-    """Prints the students in a report, with nice formatting"""
-    clear_screen()
-    print(bold(title))
-    print()
+def print_report_item(index: int, main_text: str, *suffixes: str):
+    one_indexed_index = index + 1
+    index_part = color(f"{one_indexed_index:3})", Style.DIM)
 
-    for i, student in enumerate(students):
-        index = i + 1
-        index_part = color(f"{index:3})", Style.DIM)
-        name_part = student["full_name"]
-
-        suffix = [callback(student) for callback in suffixes]
-        suffix_part = color(" ".join(suffix), Style.DIM) if suffix else ""
-
-        print(" ".join([index_part, name_part, suffix_part]))
-
-    print()
-    wait_for_enter_key()
+    suffix_part = color(" ".join(suffixes), Style.DIM) if suffixes else ""
+    print(" ".join([index_part, main_text, suffix_part]))
 
 
-def upcoming_birthday(student):
-    """Checks if the provided student's birthday is coming up in the next 30 days"""
-    birthday = date.fromisoformat(student["birthday"])
-    birthday_this_year = birthday.replace(year=date.today().year)
+def upcoming_birthdays(students: list[dict]):
+    """A report of students' birthdays in the next 30 days"""
+    target_students = []
+    for student in students:
+        birthday = date.fromisoformat(student["birthday"])
+        birthday_this_year = birthday.replace(year=date.today().year)
 
-    time_until_birthday = birthday_this_year - date.today()
-    # Lower bound to ensure birthday hasn't already passed
-    return 0 <= time_until_birthday.days <= 30
+        time_until_birthday = birthday_this_year - date.today()
+        # Lower bound of 0 to ensure birthday hasn't already passed
+        birthday_is_soon = 0 <= time_until_birthday.days <= 30
+        if birthday_is_soon:
+            target_students.append(student)
+
+    for i, student in enumerate(target_students):
+        birthday_string = iso_to_locale_string(student["birthday"])
+        print_report_item(i, birthday_string, student["full_name"])
 
 
 def surname_begins_with(student, substring: str) -> bool:
@@ -51,25 +45,21 @@ class ReportsMenu:
     def __init__(self, students: list[dict]):
         self.students = students
 
-    def generate_and_show_report(
-        self,
-        filter_callback: Callable[[dict], bool],
-        title: str,
-        suffixes: list[Callable[[dict], str]],
-    ):
-        chosen_students = filter(filter_callback, self.students)
-        display_report(chosen_students, title, suffixes)
-
     def report_option(
         self,
         title: str,
-        filter_callback: Callable[[dict], bool],
+        show_report: Callable[[list[dict]], None],
         description: str,
-        suffixes: list[Callable[[dict], str]] = [],
     ):
+        def callback():
+            print(bold(title))
+            show_report(self.students)
+            print()
+            wait_for_enter_key()
+
         return Option(
             title,
-            lambda: self.generate_and_show_report(filter_callback, title, suffixes),
+            callback,
             description=description,
         )
 
@@ -78,10 +68,7 @@ class ReportsMenu:
             [
                 self.report_option(
                     "Upcoming birthdays",
-                    upcoming_birthday,
-                    suffixes=[
-                        lambda student: f"({iso_to_locale_string(student['birthday'])})"
-                    ],
+                    upcoming_birthdays,
                     description="A list of students whose birthdays are in the next 30 days. "
                     + "This can be used to add upcoming birthdays to a noticeboard, or simply wish your students a happy birthday.",
                 ),

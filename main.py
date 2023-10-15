@@ -1,5 +1,6 @@
 """Mr Leeman's System: A pupil management system for Tree Road School
 This project is for Task 3 of the lesson 2.2.1 Programming fundamentals - validation"""
+import locale
 from colorama import Style
 from colorama import init as init_colorama
 
@@ -67,8 +68,8 @@ def create_account():
     print_hint("Note: You won't be able to see your password while you're typing it.")
     password_hash = inputs.new_password("Set your password: ")
 
-    accounts_database.add_account(username, password_hash)
     print()
+    accounts_database.add_account(username, password_hash)
     print(f"Created a new account called {bold(username)}")
     wait_for_enter_key()
 
@@ -131,6 +132,9 @@ def view_reports():
     reports_menu = ReportsMenu(students_database.get_students(current_account))
     reports_menu.show()
 
+# Use the current system locale for formatting dates/times
+# See https://bugs.python.org/issue29457#msg287086
+locale.setlocale(locale.LC_TIME, "")
 
 # Initialise the Colorama libary for terminal formatting utils
 init_colorama()
