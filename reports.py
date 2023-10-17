@@ -34,18 +34,23 @@ def upcoming_birthdays(students: list[dict]):
 
 
 def surnames_starting_with(students: list[dict]):
+    """Asks for a letter and prints a report of students with a surname beginning with it"""
     target_substring = text(f"Include surnames that start with: ").lower()
 
+    # Case-insensitively get students whose surname startw with the inputted string
     target_students = []
     for student in students:
         surname_matches = student["surname"].lower().startswith(target_substring)
         if surname_matches:
             target_students.append(student)
-    
+
+    # Sort alphabetically by surname
+    target_students.sort(key=lambda student: student["surname"])
+
+    # Print students' names in the format "Surname, Forename", since we're sorting by surname
     for i, student in enumerate(target_students):
         formatted_name = ", ".join([student["surname"], student["forename"]])
         print_report_item(i, formatted_name)
-
 
 
 class ReportsMenu:
@@ -84,7 +89,8 @@ class ReportsMenu:
                 self.report_option(
                     "Surnames starting with...",
                     surnames_starting_with,
-                    description="Lists students in alphabetica",
+                    description="A list of students whose surnames begin with a letter you choose, sorted alphabetically. "
+                    + "Can be used to decide who to let out of the classroom first, or as a last resort for taking the register.",
                 ),
             ],
             "Choose a report to view",
