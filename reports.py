@@ -1,7 +1,7 @@
 from typing import Callable
 from colorama import Style
 from inputs import text
-from menu import Menu, Option, bold, color, wait_for_enter_key
+from menu import Menu, Option, bold, clear_screen, color, wait_for_enter_key
 from datetime import date
 
 from util import iso_to_locale_string
@@ -33,12 +33,19 @@ def upcoming_birthdays(students: list[dict]):
         print_report_item(i, birthday_string, student["full_name"])
 
 
-def surname_begins_with(student, substring: str) -> bool:
-    return bool(student["surname"].lower().startswith(substring))
+def surnames_starting_with(students: list[dict]):
+    target_substring = text(f"Include surnames that start with: ").lower()
 
+    target_students = []
+    for student in students:
+        surname_matches = student["surname"].lower().startswith(target_substring)
+        if surname_matches:
+            target_students.append(student)
+    
+    for i, student in enumerate(target_students):
+        formatted_name = ", ".join([student["surname"], student["forename"]])
+        print_report_item(i, formatted_name)
 
-def input_starting_letters(names_type: str) -> str:
-    return text(f"Include {names_type} that start with: ").lower()
 
 
 class ReportsMenu:
@@ -52,7 +59,9 @@ class ReportsMenu:
         description: str,
     ):
         def callback():
-            print(bold(title))
+            clear_screen()
+            print(f"{bold('Reports')} > {bold(title)}")
+            print()
             show_report(self.students)
             print()
             wait_for_enter_key()
@@ -74,9 +83,7 @@ class ReportsMenu:
                 ),
                 self.report_option(
                     "Surnames starting with...",
-                    lambda student: surname_begins_with(
-                        student, input_starting_letters("suranmes")
-                    ),
+                    surnames_starting_with,
                     description="Lists students in alphabetica",
                 ),
             ],
