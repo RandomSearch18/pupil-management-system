@@ -40,7 +40,8 @@ def surnames_starting_with(students: list[dict]):
     # Case-insensitively get students whose surname startw with the inputted string
     target_students = []
     for student in students:
-        surname_matches = student["surname"].lower().startswith(target_substring)
+        surname_matches = student["surname"].lower().startswith(
+            target_substring)
         if surname_matches:
             target_students.append(student)
 
@@ -60,7 +61,8 @@ def forenames_starting_with(students: list[dict]):
     # Case-insensitively get students whose forename startw with the inputted string
     target_students = []
     for student in students:
-        forename_matches = student["forename"].lower().startswith(target_substring)
+        forename_matches = student["forename"].lower().startswith(
+            target_substring)
         if forename_matches:
             target_students.append(student)
 
@@ -74,6 +76,7 @@ def forenames_starting_with(students: list[dict]):
 
 
 class ReportsMenu:
+
     def __init__(self, students: list[dict]):
         self.students = students
 
@@ -83,6 +86,7 @@ class ReportsMenu:
         show_report: Callable[[list[dict]], None],
         description: str,
     ):
+
         def callback():
             clear_screen()
             print(f"{bold('Reports')} > {bold(title)}")
@@ -103,20 +107,26 @@ class ReportsMenu:
                 self.report_option(
                     "Upcoming birthdays",
                     upcoming_birthdays,
-                    description="A list of students whose birthdays are in the next 30 days. "
-                    + "This can be used to add upcoming birthdays to a noticeboard, or simply wish your students a happy birthday.",
+                    description=
+                    "A list of students whose birthdays are in the next 30 days. "
+                    +
+                    "This can be used to add upcoming birthdays to a noticeboard, or simply wish your students a happy birthday.",
                 ),
                 self.report_option(
                     "Surnames starting with...",
                     surnames_starting_with,
-                    description="A list of students whose surnames begin with a letter you choose, sorted alphabetically. "
-                    + "Can be used to decide who to let out of the classroom first, or as a last resort for taking the register.",
+                    description=
+                    "A list of students whose surnames begin with a letter you choose, sorted alphabetically. "
+                    +
+                    "Can be used to decide who to let out of the classroom first, or as a last resort for taking the register.",
                 ),
                 self.report_option(
                     "Forenames starting with...",
                     forenames_starting_with,
-                    description="A list of students whose forenames begin with a letter you choose, sorted alphabetically. ",
-                    #+ "Can be used to decide who to let out of the classroom first, or as a last resort for taking the register.",
+                    description=
+                    "A list of students whose forenames begin with a letter you choose, sorted alphabetically. "
+                    +
+                    "Can be used as a more personal way to decide who to let out of the classroom first, or to find people with similar names that may accidentally be confused.",
                 ),
             ],
             "Choose a report to view",
