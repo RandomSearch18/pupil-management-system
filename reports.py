@@ -35,7 +35,7 @@ def upcoming_birthdays(students: list[dict]):
 
 def surnames_starting_with(students: list[dict]):
     """Asks for a letter and prints a report of students with a surname beginning with it"""
-    target_substring = text(f"Include surnames that start with: ").lower()
+    target_substring = text("Include surnames that start with: ").lower()
 
     # Case-insensitively get students whose surname startw with the inputted string
     target_students = []
@@ -50,6 +50,26 @@ def surnames_starting_with(students: list[dict]):
     # Print students' names in the format "Surname, Forename", since we're sorting by surname
     for i, student in enumerate(target_students):
         formatted_name = ", ".join([student["surname"], student["forename"]])
+        print_report_item(i, formatted_name)
+
+
+def forenames_starting_with(students: list[dict]):
+    """Asks for a letter and prints a report of students with a forename beginning with it"""
+    target_substring = text("Include forenames that start with: ").lower()
+
+    # Case-insensitively get students whose forename startw with the inputted string
+    target_students = []
+    for student in students:
+        forename_matches = student["forename"].lower().startswith(target_substring)
+        if forename_matches:
+            target_students.append(student)
+
+    # Sort alphabetically by forename
+    target_students.sort(key=lambda student: student["forename"])
+
+    # Print students' names in the format "Forename Surname", since we're sorting by forename
+    for i, student in enumerate(target_students):
+        formatted_name = " ".join([student["forename"], student["surname"]])
         print_report_item(i, formatted_name)
 
 
@@ -91,6 +111,12 @@ class ReportsMenu:
                     surnames_starting_with,
                     description="A list of students whose surnames begin with a letter you choose, sorted alphabetically. "
                     + "Can be used to decide who to let out of the classroom first, or as a last resort for taking the register.",
+                ),
+                self.report_option(
+                    "Forenames starting with...",
+                    forenames_starting_with,
+                    description="A list of students whose forenames begin with a letter you choose, sorted alphabetically. ",
+                    #+ "Can be used to decide who to let out of the classroom first, or as a last resort for taking the register.",
                 ),
             ],
             "Choose a report to view",
