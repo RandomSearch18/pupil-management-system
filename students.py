@@ -1,4 +1,5 @@
 import datetime
+from pathlib import Path
 from typing import Optional
 
 from colorama import Style
@@ -9,7 +10,7 @@ from util import JSONDatabase, iso_to_locale_string
 
 class StudentsDatabase(JSONDatabase):
     def __init__(self):
-        super().__init__("students.json", [], "students-bootstrap.json")
+        super().__init__("students.json", [], Path(".", "students-bootstrap.json"))
 
     def get_student(
         self, id: Optional[int] = None, email_address: Optional[str] = None

@@ -26,8 +26,9 @@ def process_password(raw_password: str) -> bytes:
 
 
 class JSONDatabase:
-    # By default, store data in the current directory
-    base_path = Path(".")
+    # By default, store data in a `data` folder the current directory
+    base_path = Path(".", "data")
+    base_path.mkdir(parents=True, exist_ok=True)
 
     def save(self):
         """Saves the database to disk, overwriting that the file contents to match the in-memory data."""
@@ -39,17 +40,16 @@ class JSONDatabase:
         with open(self.file_path, "r") as file:
             self.data = json.load(file)
 
-    def get_initial_data(self, initial_data: Any, initial_data_filename: Optional[str]):
+    def get_initial_data(self, initial_data: Any, initial_data_path: Optional[Path]):
         """Checks the provided file for initial data, otherwise returns the fallback data.
 
-        - initial_data_filename= is a filename (relative to the base path) of a file that contains default data for the database
+        - initial_data_path= is the path to a file that contains default data for the database
         - This data will be used to initialise the database, if the argument is provided and the file exists
         - initial_data= is the fallback data, which will initialise the database if the above fails
         """
-        if not initial_data_filename:
+        if not initial_data_path:
             return initial_data
 
-        initial_data_path = Path(self.base_path, initial_data_filename)
         try:
             with open(initial_data_path, "r", encoding="utf-8") as initial_data_file:
                 return json.load(initial_data_file)
@@ -60,7 +60,7 @@ class JSONDatabase:
         self,
         filename: str,
         initial_data: Any,
-        initial_data_filename: Optional[str] = None,
+        initial_data_path: Optional[Path] = None,
     ):
         self.file_path = Path(self.base_path, filename)
 
@@ -69,7 +69,7 @@ class JSONDatabase:
         try:
             self.load()
         except FileNotFoundError:
-            self.data = self.get_initial_data(initial_data, initial_data_filename)
+            self.data = self.get_initial_data(initial_data, initial_data_path)
             self.save()
 
 
