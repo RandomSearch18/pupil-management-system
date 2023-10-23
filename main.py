@@ -125,6 +125,7 @@ def show_student_info():
 
     print()
     students_database.display_student_info(matching_student)
+    print()
     wait_for_enter_key()
 
 
