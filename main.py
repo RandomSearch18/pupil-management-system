@@ -17,6 +17,7 @@ from menu import (
     wait_for_enter_key,
 )
 from reports import ReportsMenu
+from settings import SettingsDatabase
 from students import StudentsDatabase
 
 
@@ -141,6 +142,7 @@ locale.setlocale(locale.LC_TIME, "")
 init_colorama()
 
 # Initialise the JSON databases
+settings_database = SettingsDatabase()
 accounts_database = AccountsDatabase()
 students_database = StudentsDatabase()
 

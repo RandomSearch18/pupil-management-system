@@ -3,5 +3,4 @@
 
 /.venv
 
-accounts.json
-students.json
+/data
