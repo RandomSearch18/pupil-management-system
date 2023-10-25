@@ -10,6 +10,7 @@ from menu import (
     Menu,
     Option,
     bold,
+    clear_screen,
     color,
     error_incorrect_input,
     info_line,
@@ -57,10 +58,13 @@ def ask_for_new_username(show_tip=True) -> str:
 
 
 def create_account():
+    clear_screen()
     print_hint(
         "Your username will identify you as an individual, and you'll enter it to access this system."
     )
     username = ask_for_new_username()
+
+    print()
 
     print_hint(
         "Your password is a secret phrase that you'll use to prove who you are when you log in."
