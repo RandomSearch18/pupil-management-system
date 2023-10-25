@@ -1,5 +1,6 @@
 from typing import Callable
 from colorama import Style
+from app import App
 from inputs import text
 from menu import Menu, Option, bold, clear_screen, color, wait_for_enter_key
 from datetime import date
@@ -77,8 +78,8 @@ def forenames_starting_with(students: list[dict]):
 
 class ReportsMenu:
 
-    def __init__(self, students: list[dict]):
-        self.students = students
+    def __init__(self, app: App):
+        self.app = app
 
     def report_option(
         self,
@@ -88,10 +89,11 @@ class ReportsMenu:
     ):
 
         def callback():
+            students = self.app.students_database.get_students()
             clear_screen()
             print(f"{bold('Reports')} > {bold(title)}")
             print()
-            show_report(self.students)
+            show_report(students)
             print()
             wait_for_enter_key()
 

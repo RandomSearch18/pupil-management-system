@@ -105,7 +105,7 @@ class TerminalUI:
         wait_for_enter_key()
 
     def log_out(self):
-        if not self.app.current_account:
+        if not self.app.signed_in():
             return print("Nobody is signed in!")
 
         old_username = self.app.current_account["username"]
@@ -130,7 +130,7 @@ class TerminalUI:
         wait_for_enter_key()
 
     def view_reports(self):
-        reports_menu = ReportsMenu(self.app.students_database.get_students(self.app.current_account))
+        reports_menu = ReportsMenu(self.app.students_database.get_students())
         reports_menu.show()
 
     def show(self):
@@ -144,25 +144,25 @@ class TerminalUI:
                 Option(
                     "Log in",
                     self.log_in,
-                    lambda: not self.app.current_account and self.app.accounts_database.data,
+                    lambda: not self.app.signed_in() and self.app.accounts_database.data,
                 ),
-                Option("Create account", self.create_account, lambda: not self.app.current_account),
+                Option("Create account", self.create_account, lambda: not self.app.signed_in()),
                 Option(
                     "Register new student",
                     self.register_student,
-                    lambda: bool(self.app.current_account),
+                    lambda: self.app.signed_in(),
                 ),
                 Option(
                     "Get a student's details",
                     self.show_student_info,
-                    lambda: self.app.students_database.get_students(self.app.current_account),
+                    lambda: self.app.students_database.get_students(),
                 ),
                 Option(
                     "View student reports",
                     self.view_reports,
-                    should_show=lambda: bool(self.app.current_account),
+                    lambda: self.app.signed_in(),
                 ),
-                Option("Log out", self.log_out, lambda: bool(self.app.current_account)),
+                Option("Log out", self.log_out, lambda: self.app.signed_in()),
             ],
         )
 

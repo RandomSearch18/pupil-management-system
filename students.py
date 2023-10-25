@@ -1,16 +1,19 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional
 import datetime
 from pathlib import Path
-from typing import Optional
-
 from colorama import Style
 from menu import bold, color, info_line
-
 from util import JSONDatabase, iso_to_locale_string
+
+if TYPE_CHECKING:
+    from app import App
 
 
 class StudentsDatabase(JSONDatabase):
-    def __init__(self):
+    def __init__(self, app: App):
         super().__init__("students.json", [], Path(".", "students-bootstrap.json"))
+        self.app = app
 
     def get_student(
         self, id: Optional[int] = None, email_address: Optional[str] = None
@@ -48,10 +51,10 @@ class StudentsDatabase(JSONDatabase):
 
         return possible_email
 
-    def get_students(self, current_account) -> list[dict]:
+    def get_students(self) -> list[dict]:
         """Returns a list of all the students"""
-        # TODO: In the future, we can only return students that are akkiwed to be accessed by the current user.
-        if not current_account:
+        # TODO: In the future, we can only return students that are allowed to be accessed by the current user.
+        if not self.app.signed_in():
             # Users that aren't signed in don't get to access student data
             return []
         return self.data.copy()
