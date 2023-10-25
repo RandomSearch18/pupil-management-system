@@ -106,4 +106,3 @@ class StudentsDatabase(JSONDatabase):
         info_line("Tutor group", student["tutor_group"])
         info_line("Home phone number", student["home_phone"])
         info_line("School email address", student["school_email"])
-

@@ -85,6 +85,7 @@ class TerminalUI:
 
         - Doesn't ask for email or ID as those are generated
         - Adds the student to the database"""
+        clear_screen()
         forename = inputs.name("Forename: ")
         surname = inputs.name("Surname: ")
         birthday = inputs.date(f"Birthday: {color('(YYYY-MM-DD)', Style.DIM)} ")
@@ -144,9 +145,14 @@ class TerminalUI:
                 Option(
                     "Log in",
                     self.log_in,
-                    lambda: not self.app.signed_in() and self.app.accounts_database.data,
+                    lambda: not self.app.signed_in()
+                    and self.app.accounts_database.data,
                 ),
-                Option("Create account", self.create_account, lambda: not self.app.signed_in()),
+                Option(
+                    "Create account",
+                    self.create_account,
+                    lambda: not self.app.signed_in(),
+                ),
                 Option(
                     "Register new student",
                     self.register_student,
