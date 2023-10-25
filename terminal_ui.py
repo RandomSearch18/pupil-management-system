@@ -58,15 +58,23 @@ class TerminalUI:
     def __init__(self, app: App) -> None:
         self.app = app
 
-    def test(self, text = "AAA"):
-        def decorator(callback):
-            def wrapper(*args, **kwargs):
-                print(f"aa {text}")
-                return callback(self, *args, **kwargs)
-            return wrapper
-        return decorator
-    
+    def page(pause_at_end = True, clear_at_start = True):
+        def make_page(callback):
+            def wrapper(self):
+                if clear_at_start:
+                    clear_screen()
+                
+                result = 1
+                while isinstance(result, int) and result > 0:
+                    # The callback returned a positive number, so it wants to be restarted
+                    result = callback(self)
 
+                if pause_at_end:
+                    print()
+                    wait_for_enter_key()
+            return wrapper
+        return make_page
+    
     @page()
     def log_in(self):
         target_username = inputs.text("Username: ", "Enter your username")
