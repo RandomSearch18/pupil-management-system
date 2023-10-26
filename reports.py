@@ -2,7 +2,7 @@ from typing import Callable
 from colorama import Style
 from app import App
 from inputs import text
-from menu import Menu, Option, bold, clear_screen, color, wait_for_enter_key
+from menu import Menu, Page, bold, clear_screen, color, wait_for_enter_key
 from datetime import date
 
 from util import iso_to_locale_string
@@ -97,7 +97,7 @@ class ReportsMenu:
             print()
             wait_for_enter_key()
 
-        return Option(
+        return Page(
             title,
             callback,
             description=description,

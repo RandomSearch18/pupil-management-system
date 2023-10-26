@@ -8,7 +8,7 @@ from app import App
 import inputs
 from menu import (
     Menu,
-    Option,
+    Page,
     bold,
     clear_screen,
     color,
@@ -87,7 +87,7 @@ class TerminalUI:
 
         return make_page
 
-    @page(pause_at_end=False)
+    #@page(pause_at_end=False)
     def log_in(self):
         target_username = inputs.text("Username: ", "Enter your username")
         matching_user = self.app.accounts_database.get_account(username=target_username)
@@ -203,33 +203,33 @@ class TerminalUI:
         main_menu = Menu(
             title="Mr Leeman's system",
             options=[
-                Option(
+                Page(
                     "Log in",
                     self.log_in,
                     lambda: not self.app.signed_in()
                     and self.app.accounts_database.data,
                 ),
-                Option(
+                Page(
                     "Create account",
                     self.create_account,
                     lambda: not self.app.signed_in(),
                 ),
-                Option(
+                Page(
                     "Register new student",
                     self.register_student,
                     lambda: self.app.signed_in(),
                 ),
-                Option(
+                Page(
                     "Get a student's details",
                     self.show_student_info,
                     lambda: self.app.students_database.get_students(),
                 ),
-                Option(
+                Page(
                     "View student reports",
                     self.view_reports,
                     lambda: self.app.signed_in(),
                 ),
-                Option("Log out", self.log_out, lambda: self.app.signed_in()),
+                Page("Log out", self.log_out, lambda: self.app.signed_in()),
             ],
         )
 

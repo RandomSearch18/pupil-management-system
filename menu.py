@@ -101,23 +101,41 @@ class MenuItem:
         pass
 
 
-class Option(MenuItem):
+class Page(MenuItem):
+    """Pages are sections of the UI for viewing inforomation or perfoming an action"""
 
     def __init__(self,
                  label: str,
                  callback: Callable,
                  should_show: Optional[Callable[[], bool]] = None,
-                 description: Optional[str] = None):
-        """Create a menu item that can be added to menu.
-        name: The text that is shown to the user, in the menu
-        callback: The function to run when the user selects the option
-        """
+                 description: Optional[str] = None,
+                 clear_at_start = True,
+                 pause_at_end = True):
         super().__init__(label, should_show, description)
         self.callback = callback
+        self.clear_at_start = clear_at_start
+        self.pause_at_end = pause_at_end
 
     def execute(self):
         try:
-            self.callback()
+            if self.clear_at_start:
+                clear_screen()
+
+            # Update breadcrumbs for foreward navigation
+            #self.breadcrumbs.push(self.callback.__name__)
+            #print(self.breadcrumbs.pages)
+
+            result = 1
+            while isinstance(result, int) and result > 0:
+                # The callback returned a positive number, so it wants to be restarted
+                result = self.callback()
+
+            if self.pause_at_end:
+                print()
+                wait_for_enter_key()
+
+            # Callback has completed, so record the backward navigation
+            #self.breadcrumbs.pop()
         except KeyboardInterrupt:
             print(color("\n" + "Aborted", Fore.RED))
 
