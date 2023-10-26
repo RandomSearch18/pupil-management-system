@@ -75,7 +75,7 @@ class TerminalUI:
             return wrapper
         return make_page
     
-    @page()
+    @page(pause_at_end=False)
     def log_in(self):
         target_username = inputs.text("Username: ", "Enter your username")
         matching_user = self.app.accounts_database.get_account(username=target_username)
@@ -108,8 +108,8 @@ class TerminalUI:
 
         return username
 
+    @page()
     def create_account(self):
-        clear_screen()
         print_hint(
             "Your username will identify you as an individual, and you'll enter it to access this system."
         )
@@ -129,14 +129,13 @@ class TerminalUI:
         print()
         self.app.accounts_database.add_account(username, password_hash)
         print(f"Created a new account called {bold(username)}")
-        wait_for_enter_key()
 
+    @page()
     def register_student(self):
         """Asks the user to input the data for a new student
 
         - Doesn't ask for email or ID as those are generated
         - Adds the student to the database"""
-        clear_screen()
         forename = inputs.name("Forename: ")
         surname = inputs.name("Surname: ")
         birthday = inputs.date(f"Birthday: {color('(YYYY-MM-DD)', Style.DIM)} ")
@@ -153,9 +152,8 @@ class TerminalUI:
         print(f"Registered student {bold(student['full_name'])} (ID #{student['id']})")
         info_line("School email address", student["school_email"])
         info_line("ID number", student["id"])
-        print()
-        wait_for_enter_key()
 
+    @page(clear_at_start=False)
     def log_out(self):
         if not self.app.signed_in():
             return print("Nobody is signed in!")
@@ -164,6 +162,7 @@ class TerminalUI:
         self.app.current_account = None
         print(f"Logged out of account {bold(old_username)}")
 
+    @page()
     def show_student_info(self):
         print_hint(
             "Each student has a numerical ID that is used to uniquely identify them."
@@ -178,9 +177,8 @@ class TerminalUI:
 
         print()
         self.app.students_database.display_student_info(matching_student)
-        print()
-        wait_for_enter_key()
 
+    @page(pause_at_end=False)
     def view_reports(self):
         reports_menu = ReportsMenu(self.app.students_database.get_students())
         reports_menu.show()
