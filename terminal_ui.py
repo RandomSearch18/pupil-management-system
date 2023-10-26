@@ -1,5 +1,6 @@
 """The main code for the menu-driven, text-based interface."""
 
+from typing import Callable, Optional
 from colorama import Style
 from colorama import init as init_colorama
 from app import App
@@ -19,18 +20,56 @@ from menu import (
 from reports import ReportsMenu
 
 
+class Breadcrumbs:
+    """Keeps track of the hierarchy of pages being viewed by the user"""
+
+    def __init__(self):
+        self.pages = []
+
+    def push(self, page: str) -> int:
+        """Adds a page onto the end of the breadcrumbs
+        
+        - Represents a foreward navigation action
+        - Returns the index of the added page
+        """
+        self.pages.append(page)
+        return len(self.pages) - 1
+    
+    def pop(self):
+        """Removes the page at the end of the breadcrumbs
+        
+        - Represents a backward navigation action
+        """
+        self.pages.pop()
+        # TODO Maybe this should return the index of the removed item or something
+
+    def replace(self, page: str):
+        """Replaces the page at the end of the breadcrumbs with the provided page
+        
+        - Represents a sideways navigation action
+        - Retuns the index of the new (replaced) page
+        """
+        self.pages[-1] = page
+        return len(self.pages) - 1
+
+
 class TerminalUI:
     """A friendly, cross-platform interface to the pupil management system that runs in the terminal"""
 
     def __init__(self, app: App) -> None:
         self.app = app
+        self.breadcrumbs = Breadcrumbs()
 
     def page(pause_at_end=True, clear_at_start=True):
         """Pages are sections of the UI for viewing inforomation or perfoming an action"""
-        def make_page(callback):
-            def wrapper(self):
+        def make_page(callback: Callable[[], Optional[int]]):
+            def wrapper(self): # TODO Python 3.11 will let us use the Self type here
                 if clear_at_start:
                     clear_screen()
+
+                # Update breadcrumbs for foreward navigation
+                self.breadcrumbs.push(callback.__name__)
+                print(self.breadcrumbs.pages)
 
                 result = 1
                 while isinstance(result, int) and result > 0:
@@ -40,6 +79,9 @@ class TerminalUI:
                 if pause_at_end:
                     print()
                     wait_for_enter_key()
+
+                # Callback has completed, so record the backward navigation
+                self.breadcrumbs.pop()
 
             return wrapper
 
