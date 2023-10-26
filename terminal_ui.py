@@ -1,6 +1,5 @@
 """The main code for the menu-driven, text-based interface."""
 
-from typing import Callable
 from colorama import Style
 from colorama import init as init_colorama
 from app import App
@@ -20,50 +19,19 @@ from menu import (
 from reports import ReportsMenu
 
 
-# def page(pause_at_end = True, clear_at_start = True):
-#     """Pages are sections of the UI for viewing inforomation or perfoming an action"""
-#     def make_page(callback: Callable[[], None]):
-#         def wrapper(self):
-#             #print(self.log_in)
-#             if clear_at_start:
-#                 #clear_screen()
-#                 print("Clear")
-#             print(callback)
-#             #callback()
-#             if pause_at_end:
-#                 wait_for_enter_key()
-#         return wrapper
-#     return make_page
-
-def page(pause_at_end = True, clear_at_start = True):
-    def make_page(callback):
-        def wrapper(self):
-            if clear_at_start:
-                clear_screen()
-            
-            result = 1
-            while isinstance(result, int) and result > 0:
-                # The callback returned a positive number, so it wants to be restarted
-                result = callback(self)
-
-            if pause_at_end:
-                print()
-                wait_for_enter_key()
-        return wrapper
-    return make_page
-
 class TerminalUI:
     """A friendly, cross-platform interface to the pupil management system that runs in the terminal"""
 
     def __init__(self, app: App) -> None:
         self.app = app
 
-    def page(pause_at_end = True, clear_at_start = True):
+    def page(pause_at_end=True, clear_at_start=True):
+        """Pages are sections of the UI for viewing inforomation or perfoming an action"""
         def make_page(callback):
             def wrapper(self):
                 if clear_at_start:
                     clear_screen()
-                
+
                 result = 1
                 while isinstance(result, int) and result > 0:
                     # The callback returned a positive number, so it wants to be restarted
@@ -72,9 +40,11 @@ class TerminalUI:
                 if pause_at_end:
                     print()
                     wait_for_enter_key()
+
             return wrapper
+
         return make_page
-    
+
     @page(pause_at_end=False)
     def log_in(self):
         target_username = inputs.text("Username: ", "Enter your username")
