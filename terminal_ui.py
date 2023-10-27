@@ -52,6 +52,12 @@ class Breadcrumbs:
         self.pages[-1] = page
         return len(self.pages) - 1
 
+    def to_formatted(self):
+        """Generates a nicely-formatted line of text from the breadcrumbs"""
+        formatted_pages = [bold(page) for page in self.pages]
+        pretty_breadcrumbs = " > ".join(formatted_pages)
+        return pretty_breadcrumbs 
+
 
 class TerminalUI:
     """A friendly, cross-platform interface to the pupil management system that runs in the terminal"""
@@ -166,6 +172,8 @@ class TerminalUI:
         """The entrypoint for the menu-based UI"""
         # Initialise the Colorama libary for terminal formatting utils
         init_colorama()
+
+        self.breadcrumbs.push("Mr Leeman's System")
 
         options = [
             Page(

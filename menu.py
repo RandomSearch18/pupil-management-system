@@ -129,7 +129,6 @@ class Page(MenuItem):
                 clear_screen()
 
             self.before_foreward_navigation()
-            print(self.breadcrumbs.pages)
 
             result = 1
             while isinstance(result, int) and result > 0:
@@ -152,6 +151,8 @@ class Page(MenuItem):
         """Called just before the user "enters into" the page"""
         if self.breadcrumbs:
             self.breadcrumbs.push(self.title)
+            title_line = self.breadcrumbs.to_formatted()
+            print(title_line)
     
     def before_backward_navigation(self):
         """Called just before the user "exits out of" the page, i.e. after the callback has reutned"""

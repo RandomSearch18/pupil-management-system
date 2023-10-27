@@ -93,15 +93,14 @@ class ReportsMenu:
         description: str,
     ):
 
-        def callback():
+        def show_report_wrapper():
             students = self.app.students_database.get_students()
-            print(f"{bold('Reports')} > {bold(title)}")
             print()
             show_report(students)
 
         return Page(
             title,
-            callback,
+            show_report_wrapper,
             description=description,
         )
 
