@@ -113,9 +113,11 @@ class Page(MenuItem):
                  callback: Callable,
                  should_show: Optional[Callable[[], bool]] = None,
                  description: Optional[str] = None,
+                 title: Optional[str] = None,
                  clear_at_start = True,
                  pause_at_end = True):
         super().__init__(label, should_show, description)
+        self.title = title or label or callback.__name__
         self.callback = callback
         self.clear_at_start = clear_at_start
         self.pause_at_end = pause_at_end
@@ -149,7 +151,7 @@ class Page(MenuItem):
     def before_foreward_navigation(self):
         """Called just before the user "enters into" the page"""
         if self.breadcrumbs:
-            self.breadcrumbs.push(self.callback.__name__)
+            self.breadcrumbs.push(self.title)
     
     def before_backward_navigation(self):
         """Called just before the user "exits out of" the page, i.e. after the callback has reutned"""
