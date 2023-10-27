@@ -173,7 +173,7 @@ class TerminalUI:
         # Initialise the Colorama libary for terminal formatting utils
         init_colorama()
 
-        self.breadcrumbs.push("Mr Leeman's System")
+        self.breadcrumbs.push(self.app.brand.APP_NAME)
 
         options = [
             Page(
@@ -212,7 +212,6 @@ class TerminalUI:
         ]
 
         main_menu = Menu(
-            title="Mr Leeman's system",
             options=options,
             ui=self
         )

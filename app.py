@@ -5,10 +5,16 @@ from settings import SettingsDatabase
 from students import StudentsDatabase
 
 
+class Brand:
+    """Contains branding and metadata for the app"""
+    APP_NAME = "Mr Leeman's System"
+
 class App:
     """A running instance of the application"""
 
     def __init__(self) -> None:
+        self.brand = Brand
+
         # Initialise the JSON databases
         self.settings_database = SettingsDatabase()
         self.accounts_database = AccountsDatabase()

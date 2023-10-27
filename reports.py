@@ -132,7 +132,6 @@ class ReportsMenu:
                     "Can be used as a more personal way to decide who to let out of the classroom first, or to find people with similar names that may accidentally be confused.",
                 ),
             ],
-            ui=self.ui,
-            title="Choose a report to view",
+            ui=self.ui
         )
         menu.show()

@@ -57,7 +57,7 @@ def get_selection(max: int) -> Optional[int]:
     """Asks the user to pick a 1-indexed number up to (and including) `max`,
     returing it as zero-indexed."""
     try:
-        raw_input = input("Make a selection: ")
+        raw_input = input("Pick an option: ")
     except KeyboardInterrupt:
         print(color("Cancelled!", Fore.RED))
         return None
@@ -212,11 +212,10 @@ class Menu:
         # to keep it readable and to seperate out the options.
         use_extra_linebreaks = self.uses_descriptions()
 
-        if self.title:
-            print(bold(self.title))
-            if use_extra_linebreaks:
-                # Padding between title and options
-                print()
+        print(self.ui.breadcrumbs.to_formatted())
+        if use_extra_linebreaks:
+            # Padding between the breadcrumbs and the options
+            print()
 
         # Print each option on its own line
         for i, option in enumerate(relevant_options):
@@ -251,12 +250,12 @@ class Menu:
 
         self.show(loop)
 
-    def __init__(self, options: list[MenuItem], ui: TerminalUI, title: Optional[str] = None):
+    def __init__(self, options: list[MenuItem], ui: TerminalUI):
         self.options = options or []
-        self.title = title
+        self.ui = ui
 
         # Use the breadcrumbs for the current UI for each page in the menu
         for option in self.options:
             if not isinstance(option, Page):
                 continue
-            option.use_breadcrumbs(ui.breadcrumbs)
+            option.use_breadcrumbs(self.ui.breadcrumbs)
