@@ -175,6 +175,9 @@ class TerminalUI:
         reports_menu = ReportsMenu(self.app, ui=self)
         reports_menu.show()
 
+    def trigger_exception(self):
+        raise RuntimeError("Manually-triggered exception for debug purposes")
+
     def show(self):
         """The entrypoint for the menu-based UI"""
         # Initialise the Colorama libary for terminal formatting utils
@@ -216,6 +219,7 @@ class TerminalUI:
                 lambda: self.app.signed_in(),
                 clear_at_start=False,
             ),
+            Page("Debug: Trigger an exception", self.trigger_exception)
         ]
 
         main_menu = Menu(options=options, ui=self)

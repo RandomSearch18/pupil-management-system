@@ -142,6 +142,7 @@ class Page(MenuItem):
             self.before_backward_navigation()
         except KeyboardInterrupt:
             print(color("\n" + "Aborted", Fore.RED))
+            self.before_backward_navigation()
 
     def use_breadcrumbs(self, breadcrumbs: Breadcrumbs):
         """Registers the provided breadcrumbs object to be written to when this page is navigated to"""
