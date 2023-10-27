@@ -38,9 +38,9 @@ def clear_screen():
     print("\033[H\033[J", end="")
 
 
-def wait_for_enter_key():
+def wait_for_enter_key(text = "Press Enter to continue..."):
     """Pauses the terminal, i.e. waits for the user to press Enter before continuing"""
-    input(color("Press Enter to continue...", Style.DIM))
+    return input(color(text, Style.DIM))
 
 
 def bold(string: str) -> str:
@@ -143,6 +143,20 @@ class Page(MenuItem):
         except KeyboardInterrupt:
             print(color("\n" + "Aborted", Fore.RED))
             self.before_backward_navigation()
+        except Exception as error:
+            error_type = type(error).__name__
+            error_text = f"{error_type}: {error}"
+
+            print(color(f"Encountered an error while running '{self.title}'", Fore.RED))
+            print(color(error_text, Fore.RESET))
+
+            print()
+            inputted_text = wait_for_enter_key("Press Enter to return to the previous screen...")
+
+            # Hidden feature: Type "RAISE" at the prompt to re-raise the exception
+            if inputted_text.lower() == "raise":
+                raise error
+
 
     def use_breadcrumbs(self, breadcrumbs: Breadcrumbs):
         """Registers the provided breadcrumbs object to be written to when this page is navigated to"""
