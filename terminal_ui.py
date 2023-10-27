@@ -60,34 +60,6 @@ class TerminalUI:
         self.app = app
         self.breadcrumbs = Breadcrumbs()
 
-    def page(pause_at_end=True, clear_at_start=True):
-        """Pages are sections of the UI for viewing inforomation or perfoming an action"""
-
-        def make_page(callback: Callable[[], Optional[int]]):
-            def wrapper(self):  # TODO Python 3.11 will let us use the Self type here
-                if clear_at_start:
-                    clear_screen()
-
-                # Update breadcrumbs for foreward navigation
-                self.breadcrumbs.push(callback.__name__)
-                print(self.breadcrumbs.pages)
-
-                result = 1
-                while isinstance(result, int) and result > 0:
-                    # The callback returned a positive number, so it wants to be restarted
-                    result = callback(self)
-
-                if pause_at_end:
-                    print()
-                    wait_for_enter_key()
-
-                # Callback has completed, so record the backward navigation
-                self.breadcrumbs.pop()
-
-            return wrapper
-
-        return make_page
-
     def log_in(self):
         target_username = inputs.text("Username: ", "Enter your username")
         matching_user = self.app.accounts_database.get_account(username=target_username)
@@ -234,6 +206,7 @@ class TerminalUI:
         main_menu = Menu(
             title="Mr Leeman's system",
             options=options,
+            ui=self
         )
 
         main_menu.show(loop=True)

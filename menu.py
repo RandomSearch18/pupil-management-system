@@ -1,7 +1,11 @@
 """A menu-driven interface based around the Menu and Option classes"""
-from typing import Callable, Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING, Callable, Optional
 
 from colorama import Fore, Style
+
+if TYPE_CHECKING:
+    from terminal_ui import Breadcrumbs, TerminalUI
 
 
 def error_incorrect_input(message: str):
@@ -115,15 +119,15 @@ class Page(MenuItem):
         self.callback = callback
         self.clear_at_start = clear_at_start
         self.pause_at_end = pause_at_end
+        self.breadcrumbs = None
 
     def execute(self):
         try:
             if self.clear_at_start:
                 clear_screen()
 
-            # Update breadcrumbs for foreward navigation
-            #self.breadcrumbs.push(self.callback.__name__)
-            #print(self.breadcrumbs.pages)
+            self.before_foreward_navigation()
+            print(self.breadcrumbs.pages)
 
             result = 1
             while isinstance(result, int) and result > 0:
@@ -134,11 +138,23 @@ class Page(MenuItem):
                 print()
                 wait_for_enter_key()
 
-            # Callback has completed, so record the backward navigation
-            #self.breadcrumbs.pop()
+            self.before_backward_navigation()
         except KeyboardInterrupt:
             print(color("\n" + "Aborted", Fore.RED))
 
+    def use_breadcrumbs(self, breadcrumbs: Breadcrumbs):
+        """Registers the provided breadcrumbs object to be written to when this page is navigated to"""
+        self.breadcrumbs = breadcrumbs
+
+    def before_foreward_navigation(self):
+        """Called just before the user "enters into" the page"""
+        if self.breadcrumbs:
+            self.breadcrumbs.push(self.callback.__name__)
+    
+    def before_backward_navigation(self):
+        """Called just before the user "exits out of" the page, i.e. after the callback has reutned"""
+        if self.breadcrumbs:
+            self.breadcrumbs.pop()
 
 class Submenu(MenuItem):
 
@@ -232,7 +248,12 @@ class Menu:
 
         self.show(loop)
 
-    def __init__(self, options: list[MenuItem], title: Optional[str] = None):
-        options = options or []
-        self.options = options
+    def __init__(self, options: list[MenuItem], ui: TerminalUI, title: Optional[str] = None):
+        self.options = options or []
         self.title = title
+
+        # Use the breadcrumbs for the current UI for each page in the menu
+        for option in self.options:
+            if not isinstance(option, Page):
+                continue
+            option.use_breadcrumbs(ui.breadcrumbs)
