@@ -28,16 +28,16 @@ class Breadcrumbs:
 
     def push(self, page: str) -> int:
         """Adds a page onto the end of the breadcrumbs
-        
+
         - Represents a foreward navigation action
         - Returns the index of the added page
         """
         self.pages.append(page)
         return len(self.pages) - 1
-    
+
     def pop(self):
         """Removes the page at the end of the breadcrumbs
-        
+
         - Represents a backward navigation action
         """
         self.pages.pop()
@@ -45,7 +45,7 @@ class Breadcrumbs:
 
     def replace(self, page: str):
         """Replaces the page at the end of the breadcrumbs with the provided page
-        
+
         - Represents a sideways navigation action
         - Retuns the index of the new (replaced) page
         """
@@ -62,8 +62,9 @@ class TerminalUI:
 
     def page(pause_at_end=True, clear_at_start=True):
         """Pages are sections of the UI for viewing inforomation or perfoming an action"""
+
         def make_page(callback: Callable[[], Optional[int]]):
-            def wrapper(self): # TODO Python 3.11 will let us use the Self type here
+            def wrapper(self):  # TODO Python 3.11 will let us use the Self type here
                 if clear_at_start:
                     clear_screen()
 
@@ -87,7 +88,6 @@ class TerminalUI:
 
         return make_page
 
-    #@page(pause_at_end=False)
     def log_in(self):
         target_username = inputs.text("Username: ", "Enter your username")
         matching_user = self.app.accounts_database.get_account(username=target_username)
@@ -120,7 +120,6 @@ class TerminalUI:
 
         return username
 
-    @page()
     def create_account(self):
         print_hint(
             "Your username will identify you as an individual, and you'll enter it to access this system."
@@ -142,7 +141,6 @@ class TerminalUI:
         self.app.accounts_database.add_account(username, password_hash)
         print(f"Created a new account called {bold(username)}")
 
-    @page()
     def register_student(self):
         """Asks the user to input the data for a new student
 
@@ -165,7 +163,6 @@ class TerminalUI:
         info_line("School email address", student["school_email"])
         info_line("ID number", student["id"])
 
-    @page(clear_at_start=False)
     def log_out(self):
         if not self.app.signed_in():
             return print("Nobody is signed in!")
@@ -174,7 +171,6 @@ class TerminalUI:
         self.app.current_account = None
         print(f"Logged out of account {bold(old_username)}")
 
-    @page()
     def show_student_info(self):
         print_hint(
             "Each student has a numerical ID that is used to uniquely identify them."
@@ -190,9 +186,8 @@ class TerminalUI:
         print()
         self.app.students_database.display_student_info(matching_student)
 
-    @page(pause_at_end=False)
     def view_reports(self):
-        reports_menu = ReportsMenu(self.app.students_database.get_students())
+        reports_menu = ReportsMenu(self.app)
         reports_menu.show()
 
     def show(self):
@@ -200,37 +195,45 @@ class TerminalUI:
         # Initialise the Colorama libary for terminal formatting utils
         init_colorama()
 
+        options = [
+            Page(
+                "Log in",
+                self.log_in,
+                lambda: not self.app.signed_in() and self.app.accounts_database.data,
+                pause_at_end=False,
+            ),
+            Page(
+                "Create account",
+                self.create_account,
+                lambda: not self.app.signed_in(),
+            ),
+            Page(
+                "Register new student",
+                self.register_student,
+                lambda: self.app.signed_in(),
+            ),
+            Page(
+                "Get a student's details",
+                self.show_student_info,
+                lambda: self.app.students_database.get_students(),
+            ),
+            Page(
+                "View student reports",
+                self.view_reports,
+                lambda: self.app.signed_in(),
+                pause_at_end=False
+            ),
+            Page(
+                "Log out",
+                self.log_out,
+                lambda: self.app.signed_in(),
+                clear_at_start=False,
+            ),
+        ]
+
         main_menu = Menu(
             title="Mr Leeman's system",
-            options=[
-                Page(
-                    "Log in",
-                    self.log_in,
-                    lambda: not self.app.signed_in()
-                    and self.app.accounts_database.data,
-                ),
-                Page(
-                    "Create account",
-                    self.create_account,
-                    lambda: not self.app.signed_in(),
-                ),
-                Page(
-                    "Register new student",
-                    self.register_student,
-                    lambda: self.app.signed_in(),
-                ),
-                Page(
-                    "Get a student's details",
-                    self.show_student_info,
-                    lambda: self.app.students_database.get_students(),
-                ),
-                Page(
-                    "View student reports",
-                    self.view_reports,
-                    lambda: self.app.signed_in(),
-                ),
-                Page("Log out", self.log_out, lambda: self.app.signed_in()),
-            ],
+            options=options,
         )
 
         main_menu.show(loop=True)

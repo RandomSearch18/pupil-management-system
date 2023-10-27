@@ -90,12 +90,9 @@ class ReportsMenu:
 
         def callback():
             students = self.app.students_database.get_students()
-            clear_screen()
             print(f"{bold('Reports')} > {bold(title)}")
             print()
             show_report(students)
-            print()
-            wait_for_enter_key()
 
         return Page(
             title,
