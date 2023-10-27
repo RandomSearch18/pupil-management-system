@@ -1,7 +1,7 @@
 """The main code for the menu-driven, text-based interface."""
 
 from typing import Callable, Optional
-from colorama import Style
+from colorama import Fore, Style
 from colorama import init as init_colorama
 from app import App
 
@@ -54,9 +54,16 @@ class Breadcrumbs:
 
     def to_formatted(self):
         """Generates a nicely-formatted line of text from the breadcrumbs"""
-        formatted_pages = [bold(page) for page in self.pages]
+        formatted_pages = []
+        for i, page in enumerate(self.pages):
+            is_active_page = i == len(self.pages) - 1
+            formatted_page = (
+                bold(page) if is_active_page else color(page, Style.DIM + Style.BRIGHT)
+            )
+            formatted_pages.append(formatted_page)
+
         pretty_breadcrumbs = " > ".join(formatted_pages)
-        return pretty_breadcrumbs 
+        return pretty_breadcrumbs
 
 
 class TerminalUI:
@@ -201,7 +208,7 @@ class TerminalUI:
                 "View student reports",
                 self.view_reports,
                 lambda: self.app.signed_in(),
-                pause_at_end=False
+                pause_at_end=False,
             ),
             Page(
                 "Log out",
@@ -211,9 +218,6 @@ class TerminalUI:
             ),
         ]
 
-        main_menu = Menu(
-            options=options,
-            ui=self
-        )
+        main_menu = Menu(options=options, ui=self)
 
         main_menu.show(loop=True)
