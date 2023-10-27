@@ -1,9 +1,13 @@
-from typing import Callable
+from __future__ import annotations
+from typing import Callable, TYPE_CHECKING
 from colorama import Style
 from app import App
 from inputs import text
 from menu import Menu, Page, bold, clear_screen, color, wait_for_enter_key
 from datetime import date
+
+if TYPE_CHECKING:
+    from terminal_ui import TerminalUI
 
 from util import iso_to_locale_string
 
@@ -78,8 +82,9 @@ def forenames_starting_with(students: list[dict]):
 
 class ReportsMenu:
 
-    def __init__(self, app: App):
+    def __init__(self, app: App, ui: TerminalUI):
         self.app = app
+        self.ui = ui
 
     def report_option(
         self,
@@ -128,6 +133,7 @@ class ReportsMenu:
                     "Can be used as a more personal way to decide who to let out of the classroom first, or to find people with similar names that may accidentally be confused.",
                 ),
             ],
-            "Choose a report to view",
+            ui=self.ui,
+            title="Choose a report to view",
         )
         menu.show()

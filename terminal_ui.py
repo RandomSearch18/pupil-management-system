@@ -159,7 +159,7 @@ class TerminalUI:
         self.app.students_database.display_student_info(matching_student)
 
     def view_reports(self):
-        reports_menu = ReportsMenu(self.app)
+        reports_menu = ReportsMenu(self.app, ui=self)
         reports_menu.show()
 
     def show(self):
