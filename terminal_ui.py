@@ -107,17 +107,11 @@ class TerminalUI:
         return username
 
     def create_account(self):
-        print_hint(
-            "Your username will identify you as an individual, and you'll enter it to access this system."
-        )
+        print_hint("Usernames should be easy to type and unique to yourself.")
         username = self.ask_for_new_username()
-
         print()
 
-        print_hint(
-            "Your password is a secret phrase that you'll use to prove who you are when you log in."
-            + " It cannot be reset, so keep it safe!"
-        )
+        print_hint("Passwords cannot be reset - keep it safe!")
         print_hint(
             "Note: You won't be able to see your password while you're typing it."
         )

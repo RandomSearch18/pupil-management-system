@@ -268,9 +268,3 @@ class Menu:
     def __init__(self, options: list[MenuItem], ui: TerminalUI):
         self.options = options or []
         self.ui = ui
-
-        # Use the breadcrumbs for the current UI for each page in the menu
-        for option in self.options:
-            if not isinstance(option, Page):
-                continue
-            option.use_breadcrumbs(self.ui.breadcrumbs)

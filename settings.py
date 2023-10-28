@@ -55,12 +55,14 @@ class SettingsDatabase(JSONDatabase):
             path_string = ".".join(path)
             raise KeyError(f"Setting does not exist: {path_string}")
         
+        return default_value
+        
     def set(self, *path: str, value):
         # Stores the dictionary we're checking (with the target setting nested somewhere inside)
         current_dictionary = self.data
         while len(path) > 1:
             current_dictionary = current_dictionary[path[0]]
-            path.pop(0)
+            path = path[1:]
         
         # No levels of nested dictionaries remain
         key = path[0]
