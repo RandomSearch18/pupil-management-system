@@ -4,8 +4,8 @@ A menu-based tool for viewing, searching, and managing pupils' details, made usi
 
 ## Screenshots
 
-![Screenshot of the program running in a terminal. A new account is being created, with inputs and descriptive text for the Username and Password fieldsScreenshot from 2023-10-17 20-02-13](https://github.com/RandomSearch18/pupil-management-system/assets/101704343/3e8c29a3-7515-4798-9e0c-615c4cf28290)
-![image](https://github.com/RandomSearch18/pupil-management-system/assets/101704343/a251081d-e807-4a75-8867-0e1534317b30)
+![Screenshot of the program running in a terminal. A new account is being created, with inputs and descriptive text for the Username and Password fields](https://github.com/RandomSearch18/pupil-management-system/assets/101704343/3e8c29a3-7515-4798-9e0c-615c4cf28290)
+![Screenshot of the program running in a terminal. A report for students with surnames beginning with H is being viewed.](https://github.com/RandomSearch18/pupil-management-system/assets/101704343/c60e9ef7-84c2-4f16-b80c-3d87f90d6404)
 ![Screenshot of the program running in a terminal. The user has asked for information about student #3, and their details have been printed.](https://github.com/RandomSearch18/pupil-management-system/assets/101704343/df6805ed-efc8-478a-b88e-cbcf7ecd5b56)
 
 
