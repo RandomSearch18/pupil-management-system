@@ -93,6 +93,20 @@ def integer(prompt, error_message: str = "Enter a valid whole number") -> int:
     return int_input
 
 
+def yes_no(prompt, error_message = 'Enter "yes" or "no"') -> bool:
+    """Asks for a boolean (yes or no) response"""
+    YES_ANSWERS = ["yes", "y", "t", "true", "1", ":thumbs_up:"]
+    NO_ANSWERS = ["no", "n", "f", "false", "0", ":thumbs_down:"]
+    
+    raw_input = text(prompt, error_message)
+    if raw_input in YES_ANSWERS:
+        return True
+    if raw_input in NO_ANSWERS:
+        return False
+    
+    return yes_no(prompt, error_message)
+
+
 def new_username(prompt) -> str:
     """Usernames can be 1 to 64 characters. They must only be made up of word characters,
     periods, hyphens or spaces."""
