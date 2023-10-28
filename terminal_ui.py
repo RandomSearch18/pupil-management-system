@@ -17,6 +17,7 @@ from menu import (
     print_hint,
     wait_for_enter_key,
 )
+from onboarding import Onboarding
 from reports import ReportsMenu
 
 
@@ -185,6 +186,10 @@ class TerminalUI:
 
         self.breadcrumbs.push(self.app.brand.APP_NAME)
 
+        # Enter onboarding on first run (or if onboarding was left unfinished last time)
+        if self.app.settings_database.get("tui", "onboarding", "show"):
+            Onboarding(app=self.app, ui=self).show()
+
         options = [
             Page(
                 "Log in",
@@ -219,7 +224,7 @@ class TerminalUI:
                 lambda: self.app.signed_in(),
                 clear_at_start=False,
             ),
-            Page("Debug: Trigger an exception", self.trigger_exception)
+            #Page("Debug: Trigger an exception", self.trigger_exception),
         ]
 
         main_menu = Menu(options=options, ui=self)
