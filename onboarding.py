@@ -2,7 +2,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from menu import Page
+from menu import Page, page_callback_wrapper
 
 if TYPE_CHECKING:
     from app import App
@@ -17,13 +17,15 @@ class Onboarding:
         self.stage = self.app.settings_database.get("tui", "onboarding", "stage")
 
     def create_account(self):
-        print("Create an account")
-        input()
+        print(self.ui.breadcrumbs.to_formatted())
+        page_callback_wrapper(self.ui.create_account())
 
     def show(self):
         stages: dict[str, Page] = {
             "create_account": Page("Create acount", self.create_account)
         }
 
+        self.ui.breadcrumbs.push("Initial setup")
+
         if self.stage:
-            stages[self.stage].execute()
+            stages[self.stage].execute(self.ui)

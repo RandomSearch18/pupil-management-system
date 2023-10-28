@@ -101,8 +101,16 @@ class MenuItem:
         self.should_show = should_show
         self.description = description
 
-    def execute(self):
+    def execute(self, ui: TerminalUI):
         pass
+
+
+def page_callback_wrapper(callback):
+    """Runs the callback for a page until it returns a success code or raises an error"""
+    result = 1
+    while isinstance(result, int) and result > 0:
+        # The callback returned a positive number, so it wants to be restarted
+        result = callback()
 
 
 class Page(MenuItem):
@@ -123,26 +131,24 @@ class Page(MenuItem):
         self.pause_at_end = pause_at_end
         self.breadcrumbs = None
 
-    def execute(self):
+    def execute(self, ui: TerminalUI):
         try:
             if self.clear_at_start:
                 clear_screen()
 
-            self.before_foreward_navigation()
+            self.before_foreward_navigation(ui)
 
-            result = 1
-            while isinstance(result, int) and result > 0:
-                # The callback returned a positive number, so it wants to be restarted
-                result = self.callback()
+            # Actually run the page
+            page_callback_wrapper(self.callback)
 
             if self.pause_at_end:
                 print()
                 wait_for_enter_key()
 
-            self.before_backward_navigation()
+            self.before_backward_navigation(ui)
         except KeyboardInterrupt:
             print(color("\n" + "Aborted", Fore.RED))
-            self.before_backward_navigation()
+            self.before_backward_navigation(ui)
         except Exception as error:
             error_type = type(error).__name__
             error_text = f"{error_type}: {error}"
@@ -157,27 +163,21 @@ class Page(MenuItem):
             if inputted_text.lower() == "raise":
                 raise error
 
-
-    def use_breadcrumbs(self, breadcrumbs: Breadcrumbs):
-        """Registers the provided breadcrumbs object to be written to when this page is navigated to"""
-        self.breadcrumbs = breadcrumbs
-
-    def before_foreward_navigation(self):
+    def before_foreward_navigation(self, ui: TerminalUI):
         """Called just before the user "enters into" the page"""
-        if self.breadcrumbs:
-            self.breadcrumbs.push(self.title)
-            title_line = self.breadcrumbs.to_formatted()
-            print(title_line)
+        ui.breadcrumbs.push(self.title)
+        title_line = ui.breadcrumbs.to_formatted()
+        print(title_line)
     
-    def before_backward_navigation(self):
+    def before_backward_navigation(self, ui: TerminalUI):
         """Called just before the user "exits out of" the page, i.e. after the callback has reutned"""
-        if self.breadcrumbs:
-            self.breadcrumbs.pop()
+        ui.breadcrumbs.pop()
 
 class Submenu(MenuItem):
 
-    def execute(self):
-        menu = Menu(self.options, self.title)
+    def execute(self, ui):
+        # FIXME update breadcrumbs here (probably)
+        menu = Menu(self.options, ui)
         menu.show()
 
     def __init__(self,
@@ -258,7 +258,7 @@ class Menu:
 
         # Execute the callback for the selected option
         selected_option = relevant_options[selection]
-        selected_option.execute()
+        selected_option.execute(ui=self.ui)
 
         if not loop:
             return
