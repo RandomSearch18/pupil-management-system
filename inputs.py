@@ -98,10 +98,10 @@ def yes_no(prompt, error_message = 'Enter "yes" or "no"') -> bool:
     YES_ANSWERS = ["yes", "y", "t", "true", "1", ":thumbs_up:"]
     NO_ANSWERS = ["no", "n", "f", "false", "0", ":thumbs_down:"]
     
-    raw_input = text(prompt, error_message)
-    if raw_input in YES_ANSWERS:
+    lowercase_input = text(prompt, error_message).lower()
+    if lowercase_input in YES_ANSWERS:
         return True
-    if raw_input in NO_ANSWERS:
+    if lowercase_input in NO_ANSWERS:
         return False
     
     return yes_no(prompt, error_message)
