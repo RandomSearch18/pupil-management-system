@@ -21,7 +21,7 @@ class AccountsDatabase(JSONDatabase):
         return [account["username"] for account in self.data]
 
     def add_account(self, username: str, password_hash: str):
-        new_account = {"username": username, "password_hash": password_hash}
+        new_account = {"username": username.lower(), "password_hash": password_hash}
         self.data.append(new_account)
         self.save()
 
