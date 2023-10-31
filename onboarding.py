@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from inputs import yes_no
 
-from menu import Page, bold, clear_screen, page_callback_wrapper
+from menu import Page, bold, clear_screen, page_callback_wrapper, wait_for_enter_key
 
 if TYPE_CHECKING:
     from app import App
@@ -21,8 +21,22 @@ class Onboarding:
         self.stage = stage
         self.app.settings_database.set("tui", "onboarding", "stage", value=stage)
 
+    def ask_to_start_onboarding(self):
+        clear_screen()
+        print(f"Welcome to {bold(self.app.brand.APP_NAME)}!")
+        print()
+        print(
+            """\
+To help you get started with the program, you can be taken through a guided initial setup process.
+
+Alternatively, you can go straight to the main menu and get set up on your own."""
+        )
+        print()
+
+        should_start = yes_no("Start the guided initial setup? (yes/no) ")
+        return should_start
+
     def create_account(self):
-        self.set_stage("create_account")
         print()
         print(
             """\
@@ -33,23 +47,21 @@ Create a new account for yourself by entering the required details at the prompt
         print()
         page_callback_wrapper(self.ui.create_account)
 
-    def ask_to_start_onboarding(self):
-        clear_screen()
-        print(f"Welcome to {bold(self.app.brand.APP_NAME)}!")
+    def log_in(self):
         print()
         print(
             """\
-To help you get started with the program, you can be taken through a guided initial setup process.
+Now that your account has been created, let's log in for the first time.
 
-Alternatively, you can go straight to the main menu and get set up on your own.""")
+Enter your username and password you just created at the prompts below."""
+        )
         print()
-
-        should_start = yes_no("Start the guided initial setup? (yes/no) ")
-        return should_start
+        page_callback_wrapper(self.ui.log_in)
 
     def show(self):
         stages: dict[str, Page] = {
-            "create_account": Page("Create account", self.create_account)
+            "create_account": Page("Create account", self.create_account),
+            "log_in": Page("Log in", self.log_in, pause_at_end=False)
         }
 
         self.ui.breadcrumbs.push("Initial setup")
@@ -72,6 +84,11 @@ Alternatively, you can go straight to the main menu and get set up on your own."
                 continue
 
             has_started = True
-            stage_page.execute(self.ui)
+            self.set_stage(stage_id)
+            stage_page.execute(self.ui, error_handling="restart")
 
+        # Onboarding is done!
+        print()
+        wait_for_enter_key("You're ready to go! Press Enter to view the main menu...")
+        self.app.settings_database.set("tui", "onboarding", "show", value=False)
         self.ui.breadcrumbs.pop()

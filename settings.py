@@ -46,7 +46,7 @@ class SettingsDatabase(JSONDatabase):
         """
         saved_value = self.get_from_database(*path)
 
-        if saved_value:
+        if saved_value is not self.NOT_FOUND:
             return saved_value
 
         try:

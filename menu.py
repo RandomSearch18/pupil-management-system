@@ -1,6 +1,6 @@
 """A menu-driven interface based around the Menu and Option classes"""
 from __future__ import annotations
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable, Literal, Optional
 
 from colorama import Fore, Style
 
@@ -131,7 +131,7 @@ class Page(MenuItem):
         self.pause_at_end = pause_at_end
         self.breadcrumbs = None
 
-    def execute(self, ui: TerminalUI):
+    def execute(self, ui: TerminalUI, error_handling: Literal["restart", "return"] = "restart"):
         try:
             if self.clear_at_start:
                 clear_screen()
@@ -157,11 +157,23 @@ class Page(MenuItem):
             print(color(error_text, Fore.RESET))
 
             print()
-            inputted_text = wait_for_enter_key("Press Enter to return to the previous screen...")
+            action_part = "return to the previous screen" if error_handling == "return" else "try again"
+            inputted_text = wait_for_enter_key(f"Press Enter to {action_part}...")
 
             # Hidden feature: Type "RAISE" at the prompt to re-raise the exception
             if inputted_text.lower() == "raise":
                 raise error
+
+            # Restart the page or go back to the previous page according to error_handling parameter
+            if error_handling == "restart":
+                # TODO: Bail out and go back to previous page if there have been too many errors
+                # Future idea: Give the user a menu to chose what to do, e.g. go back, restart page, debug error
+                self.before_backward_navigation(ui)
+                return self.execute(ui, error_handling)
+            if error_handling == "return":
+                self.before_backward_navigation(ui)
+                return
+
 
     def before_foreward_navigation(self, ui: TerminalUI):
         """Called just before the user "enters into" the page"""
@@ -200,7 +212,7 @@ class Menu:
         return False
 
 
-    def show(self, loop=False):
+    def show(self, loop=False, error_handling: Literal["restart", "return"] = "restart"):
         """Shows the menu to the user. It displays a list of possible actions and lets the user pick one of them.
         loop: Can be set to True to make the menu re-appear when the chosen action has completed.
               Useful for the main menu of the app, so multiple actions can be performed in one session.
@@ -258,7 +270,7 @@ class Menu:
 
         # Execute the callback for the selected option
         selected_option = relevant_options[selection]
-        selected_option.execute(ui=self.ui)
+        selected_option.execute(ui=self.ui, error_handling=error_handling)
 
         if not loop:
             return
