@@ -146,9 +146,11 @@ class Page(MenuItem):
                 wait_for_enter_key()
 
             self.before_backward_navigation(ui)
-        except KeyboardInterrupt:
+        except KeyboardInterrupt as error:
             print(color("\n" + "Aborted", Fore.RED))
             self.before_backward_navigation(ui)
+            raise error
+            
         except Exception as error:
             error_type = type(error).__name__
             error_text = f"{error_type}: {error}"
@@ -270,7 +272,11 @@ class Menu:
 
         # Execute the callback for the selected option
         selected_option = relevant_options[selection]
-        selected_option.execute(ui=self.ui, error_handling=error_handling)
+        try:
+            selected_option.execute(ui=self.ui, error_handling=error_handling)
+        except KeyboardInterrupt:
+            # If the user cancels the page, treat it as if the page exited cleanly
+            pass
 
         if not loop:
             return

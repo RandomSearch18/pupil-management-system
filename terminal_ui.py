@@ -182,7 +182,11 @@ class TerminalUI:
 
         # Enter onboarding on first run (or if onboarding was left unfinished last time)
         if self.app.settings_database.get("tui", "onboarding", "show"):
-            Onboarding(app=self.app, ui=self).show()
+            try:
+                Onboarding(app=self.app, ui=self).show()
+            except KeyboardInterrupt:
+                # Exit the terminal UI
+                return
 
         options = [
             Page(
