@@ -13,6 +13,8 @@ A menu-based tool for viewing, searching, and managing pupils' details, made usi
 
 Tested with Python 3.9 and 3.10. Will probably work with newer versions too. This project uses [Poetry](https://python-poetry.org/docs/) to manage Python libraries.
 
+I've tested the program on Linux, Windows and Android, and it should support anything that can run Python. For the best experience, ensure your terminal supports colored and formatted text (ANSI color codes).
+
 ```bash
 $ poetry install
 $ poetry run python main.py
