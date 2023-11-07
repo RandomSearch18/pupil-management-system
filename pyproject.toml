@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pupil-management-system"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = ["RandomSearch <101704343+RandomSearch18@users.noreply.github.com>"]
 
