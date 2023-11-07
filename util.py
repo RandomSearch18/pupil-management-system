@@ -30,6 +30,10 @@ class JSONDatabase:
     base_path = Path(".", "data")
     base_path.mkdir(parents=True, exist_ok=True)
 
+    def get_file_path(self):
+        """Get the path to the database's JSON file"""
+        return self.file_path
+
     def save(self):
         """Saves the database to disk, overwriting that the file contents to match the in-memory data."""
         with open(self.file_path, "w") as file:
