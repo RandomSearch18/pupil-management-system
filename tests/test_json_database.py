@@ -14,7 +14,7 @@ initial_data = {
 
 basic_database_filename = "test_database.json"
 expected_path = Path(".", "data", basic_database_filename)
-expected_path.unlink() # Delete the database file from any previous runs
+expected_path.unlink(missing_ok=True) # Delete the database file from any previous runs
 
 basic_database = JSONDatabase(basic_database_filename, initial_data)
 
