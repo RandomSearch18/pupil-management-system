@@ -26,9 +26,6 @@ def process_password(raw_password: str) -> bytes:
 
 
 class JSONDatabase:
-    # By default, store data in a `data` folder the current directory
-    base_path = Path(".", "data")
-    base_path.mkdir(parents=True, exist_ok=True)
 
     def get_file_path(self):
         """Get the path to the database's JSON file"""
@@ -66,6 +63,10 @@ class JSONDatabase:
         initial_data: Any,
         initial_data_path: Optional[Path] = None,
     ):
+        if not hasattr(self, "base_path"):
+            raise RuntimeError("JSONDatabase.base_path has not been set!")
+
+        self.base_path.mkdir(parents=True, exist_ok=True)
         self.file_path = Path(self.base_path, filename)
 
         # Start off by reading the existing data from the file
