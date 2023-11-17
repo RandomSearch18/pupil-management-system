@@ -26,7 +26,6 @@ def process_password(raw_password: str) -> bytes:
 
 
 class JSONDatabase:
-
     def get_file_path(self):
         """Get the path to the database's JSON file"""
         return self.file_path
@@ -92,23 +91,25 @@ def get_file(file_path: Path, mode="r"):
 
         return open(file_path, mode)
 
+
 def iso_to_locale_string(iso_date: str):
     """Parses an ISO-formatted date, and returns it formatted using the system locale"""
     parsed_date = date.fromisoformat(iso_date)
     locale_formatted_date = parsed_date.strftime("%x")
     return locale_formatted_date
 
+
 def get_path_in_dictionary(dictionary: dict, *path):
     """Given a dictionary of nested dictionaries and values, gets the value at the specified path"""
     # Stores the dictionary we're checking (with the target somewhere inside), or the target item itself
     current_item = dictionary
-    
+
     for key in path:
         try:
             current_item = current_item[key]
         except KeyError as error:
             # The specified path doesn't exist
             raise error
-    
+
     # Finished searching, so we must have the requested value now
     return current_item

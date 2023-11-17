@@ -22,7 +22,7 @@ def print_hint(hint: str):
 
 def info_line(field: str, data):
     """Prints a piece of data with a label (on a single line)
-    
+
     - The field is the label for the data
     - The data parameter is the actual data, e.g. a number or a string
     - Formats the content to be bold
@@ -38,7 +38,7 @@ def clear_screen():
     print("\033[H\033[J", end="")
 
 
-def wait_for_enter_key(text = "Press Enter to continue..."):
+def wait_for_enter_key(text="Press Enter to continue..."):
     """Pauses the terminal, i.e. waits for the user to press Enter before continuing"""
     return input(color(text, Style.DIM))
 
@@ -71,8 +71,7 @@ def get_selection(max: int) -> Optional[int]:
         error_incorrect_input("Select a positive number!")
         return get_selection(max)
     if selection > max:
-        error_incorrect_input(
-            f"Selection out of bounds: Must be below {max+1}")
+        error_incorrect_input(f"Selection out of bounds: Must be below {max+1}")
         return get_selection(max)
 
     # If they entered 0, we assume that they want to exit the selection
@@ -86,11 +85,12 @@ def get_selection(max: int) -> Optional[int]:
 
 
 class MenuItem:
-
-    def __init__(self,
-                 label: str,
-                 should_show: Optional[Callable[[], bool]] = None,
-                 description: Optional[str] = None):
+    def __init__(
+        self,
+        label: str,
+        should_show: Optional[Callable[[], bool]] = None,
+        description: Optional[str] = None,
+    ):
         """A menu item is a single action that the user can select from a menu.
         label: The line of text that will be shown in the menu to represent the option
         should_show: An optional function that can return False to prevent the item from being included in the menu.
@@ -116,14 +116,16 @@ def page_callback_wrapper(callback):
 class Page(MenuItem):
     """Pages are sections of the UI for viewing inforomation or perfoming an action"""
 
-    def __init__(self,
-                 label: str,
-                 callback: Callable,
-                 should_show: Optional[Callable[[], bool]] = None,
-                 description: Optional[str] = None,
-                 title: Optional[str] = None,
-                 clear_at_start = True,
-                 pause_at_end = True):
+    def __init__(
+        self,
+        label: str,
+        callback: Callable,
+        should_show: Optional[Callable[[], bool]] = None,
+        description: Optional[str] = None,
+        title: Optional[str] = None,
+        clear_at_start=True,
+        pause_at_end=True,
+    ):
         super().__init__(label, should_show, description)
         self.title = title or label or callback.__name__
         self.callback = callback
@@ -131,7 +133,9 @@ class Page(MenuItem):
         self.pause_at_end = pause_at_end
         self.breadcrumbs = None
 
-    def execute(self, ui: TerminalUI, error_handling: Literal["restart", "return"] = "restart"):
+    def execute(
+        self, ui: TerminalUI, error_handling: Literal["restart", "return"] = "restart"
+    ):
         try:
             if self.clear_at_start:
                 clear_screen()
@@ -150,7 +154,7 @@ class Page(MenuItem):
             print(color("\n" + "Aborted", Fore.RED))
             self.before_backward_navigation(ui)
             raise error
-            
+
         except Exception as error:
             error_type = type(error).__name__
             error_text = f"{error_type}: {error}"
@@ -159,7 +163,11 @@ class Page(MenuItem):
             print(color(error_text, Fore.RESET))
 
             print()
-            action_part = "return to the previous screen" if error_handling == "return" else "try again"
+            action_part = (
+                "return to the previous screen"
+                if error_handling == "return"
+                else "try again"
+            )
             inputted_text = wait_for_enter_key(f"Press Enter to {action_part}...")
 
             # Hidden feature: Type "RAISE" at the prompt to re-raise the exception
@@ -176,29 +184,30 @@ class Page(MenuItem):
                 self.before_backward_navigation(ui)
                 return
 
-
     def before_foreward_navigation(self, ui: TerminalUI):
         """Called just before the user "enters into" the page"""
         ui.breadcrumbs.push(self.title)
         title_line = ui.breadcrumbs.to_formatted()
         print(title_line)
-    
+
     def before_backward_navigation(self, ui: TerminalUI):
         """Called just before the user "exits out of" the page, i.e. after the callback has reutned"""
         ui.breadcrumbs.pop()
 
-class Submenu(MenuItem):
 
+class Submenu(MenuItem):
     def execute(self, ui):
         # FIXME update breadcrumbs here (probably)
         menu = Menu(self.options, ui)
         menu.show()
 
-    def __init__(self,
-                 label: str,
-                 title: str,
-                 options: list[MenuItem],
-                 should_show: Optional[Callable[[], bool]] = None):
+    def __init__(
+        self,
+        label: str,
+        title: str,
+        options: list[MenuItem],
+        should_show: Optional[Callable[[], bool]] = None,
+    ):
         super().__init__(label, should_show)
         self.should_show = should_show
         self.options = options
@@ -213,8 +222,9 @@ class Menu:
                 return True
         return False
 
-
-    def show(self, loop=False, error_handling: Literal["restart", "return"] = "restart"):
+    def show(
+        self, loop=False, error_handling: Literal["restart", "return"] = "restart"
+    ):
         """Shows the menu to the user. It displays a list of possible actions and lets the user pick one of them.
         loop: Can be set to True to make the menu re-appear when the chosen action has completed.
               Useful for the main menu of the app, so multiple actions can be performed in one session.
@@ -233,7 +243,7 @@ class Menu:
         if len(relevant_options) == 0:
             print(color("No options available. Goodbye!", Fore.RED))
             return
-        
+
         print("AAA")
         clear_screen()
 

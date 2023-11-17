@@ -7,7 +7,6 @@ from util import JSONDatabase, check_password
 
 
 class AccountsDatabase(JSONDatabase):
-
     def __init__(self):
         super().__init__("accounts.json", [])
 
@@ -46,7 +45,8 @@ class AccountsDatabase(JSONDatabase):
             return False
 
         is_authenticated = check_password(attempt, correct_password_hash)
-        if is_authenticated: return True
+        if is_authenticated:
+            return True
 
         error_incorrect_input("Incorrect password")
         if not suppress_hints:

@@ -222,7 +222,7 @@ class TerminalUI:
                 lambda: self.app.signed_in(),
                 clear_at_start=False,
             ),
-            #Page("Debug: Trigger an exception", self.trigger_exception),
+            # Page("Debug: Trigger an exception", self.trigger_exception),
         ]
 
         main_menu = Menu(options=options, ui=self)

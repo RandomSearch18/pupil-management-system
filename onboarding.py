@@ -61,7 +61,7 @@ Enter your username and password you just created at the prompts below."""
     def show(self):
         stages: dict[str, Page] = {
             "create_account": Page("Create account", self.create_account),
-            "log_in": Page("Log in", self.log_in, pause_at_end=False)
+            "log_in": Page("Log in", self.log_in, pause_at_end=False),
         }
 
         self.ui.breadcrumbs.push("Initial setup")
