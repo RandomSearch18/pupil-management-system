@@ -2,7 +2,6 @@ from __future__ import annotations
 from typing import Callable, TYPE_CHECKING
 from colorama import Style
 from app import App
-from inputs import text
 from menu import Menu, Page, bold, clear_screen, color, wait_for_enter_key
 from datetime import date
 

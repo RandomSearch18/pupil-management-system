@@ -1,7 +1,6 @@
 """Provides a guided introduction to the application, when it is first run."""
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from inputs import yes_no
 
 from menu import Page, bold, clear_screen, page_callback_wrapper, wait_for_enter_key
 
@@ -33,7 +32,9 @@ Alternatively, you can go straight to the main menu and get set up on your own."
         )
         print()
 
-        should_start = yes_no("Start the guided initial setup? (yes/no) ")
+        should_start = self.ui.inputs.yes_no(
+            "Start the guided initial setup? (yes/no) "
+        )
         return should_start
 
     def create_account(self):
