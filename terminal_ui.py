@@ -19,6 +19,7 @@ from menu import (
 )
 from onboarding import Onboarding
 from reports import ReportsMenu
+from ui import UI
 from util import check_password
 
 
@@ -68,11 +69,13 @@ class Breadcrumbs:
         return pretty_breadcrumbs
 
 
-class TerminalUI:
+class TerminalUI(UI):
     """A friendly, cross-platform interface to the pupil management system that runs in the terminal"""
 
     def __init__(self, app: App) -> None:
-        self.app = app
+        inputs = Inputs()
+        super().__init__(inputs, app)
+
         self.breadcrumbs = Breadcrumbs()
         self.inputs = Inputs()
 
