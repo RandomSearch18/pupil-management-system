@@ -77,7 +77,6 @@ class TerminalUI(UI):
         super().__init__(inputs, app)
 
         self.breadcrumbs = Breadcrumbs()
-        self.inputs = Inputs()
 
     def user_authentication(self, username, suppress_hints=False):
         """Prompts the user to enter their password, in order to log in with the provided username.

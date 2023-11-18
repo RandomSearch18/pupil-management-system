@@ -9,3 +9,6 @@ class UI:
     def __init__(self, inputs: Inputs, app: App):
         self.inputs = inputs
         self.app = app
+
+    def show():
+        pass

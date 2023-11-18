@@ -1,6 +1,5 @@
 from __future__ import annotations
 import datetime
-from typing import TYPE_CHECKING
 import unicodedata
 from base64 import b64encode
 from getpass import getpass
@@ -13,9 +12,6 @@ from colorama import Style
 
 from menu import color, error_incorrect_input
 from util import process_password
-
-if TYPE_CHECKING:
-    from accounts import AccountsDatabase
 
 
 class Inputs:
