@@ -14,6 +14,10 @@ class UI:
         self.inputs = inputs
         self.app = app
 
+    def wait_for_user_input(self, verb_phrase="to continue"):
+        """Pauses to wait for some user input before continuing"""
+        pass
+
     def show():
         pass
 

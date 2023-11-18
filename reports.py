@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Callable, TYPE_CHECKING
 from colorama import Style
 from app import App
-from menu import Menu, Page, bold, clear_screen, color, wait_for_enter_key
+from menu import Menu, Page, bold, clear_screen, color
 from datetime import date
 
 if TYPE_CHECKING:

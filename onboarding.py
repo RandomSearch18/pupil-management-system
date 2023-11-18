@@ -2,7 +2,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from menu import Page, bold, clear_screen, page_callback_wrapper, wait_for_enter_key
+from menu import Page, bold, clear_screen, page_callback_wrapper
 
 if TYPE_CHECKING:
     from app import App
@@ -90,6 +90,6 @@ Enter your username and password you just created at the prompts below."""
 
         # Onboarding is done!
         print()
-        wait_for_enter_key("You're ready to go! Press Enter to view the main menu...")
+        self.ui.wait_for_user_input("view the main menu")
         self.app.settings_database.set("tui", "onboarding", "show", value=False)
         self.ui.breadcrumbs.pop()

@@ -38,11 +38,6 @@ def clear_screen():
     print("\033[H\033[J", end="")
 
 
-def wait_for_enter_key(text="Press Enter to continue..."):
-    """Pauses the terminal, i.e. waits for the user to press Enter before continuing"""
-    return input(color(text, Style.DIM))
-
-
 def bold(string: str) -> str:
     """Makes the provided string bold, using ANSI escape codes"""
     return color(string, Style.BRIGHT)
@@ -147,7 +142,7 @@ class Page(MenuItem):
 
             if self.pause_at_end:
                 print()
-                wait_for_enter_key()
+                ui.wait_for_user_input()
 
             self.before_backward_navigation(ui)
         except KeyboardInterrupt as error:
@@ -156,6 +151,7 @@ class Page(MenuItem):
             raise error
 
         except Exception as error:
+            self.before_backward_navigation(ui)
             error_type = type(error).__name__
             error_text = f"{error_type}: {error}"
 
@@ -163,12 +159,12 @@ class Page(MenuItem):
             print(color(error_text, Fore.RESET))
 
             print()
-            action_part = (
-                "return to the previous screen"
+            action_phrase = (
+                "to return to the previous screen"
                 if error_handling == "return"
-                else "try again"
+                else "to try again"
             )
-            inputted_text = wait_for_enter_key(f"Press Enter to {action_part}...")
+            inputted_text = ui.wait_for_user_input(action_phrase)
 
             # Hidden feature: Type "RAISE" at the prompt to re-raise the exception
             if inputted_text.lower() == "raise":
@@ -178,10 +174,8 @@ class Page(MenuItem):
             if error_handling == "restart":
                 # TODO: Bail out and go back to previous page if there have been too many errors
                 # Future idea: Give the user a menu to chose what to do, e.g. go back, restart page, debug error
-                self.before_backward_navigation(ui)
                 return self.execute(ui, error_handling)
             if error_handling == "return":
-                self.before_backward_navigation(ui)
                 return
 
     def before_foreward_navigation(self, ui: TerminalUI):

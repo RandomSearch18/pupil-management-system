@@ -15,7 +15,6 @@ from menu import (
     error_incorrect_input,
     info_line,
     print_hint,
-    wait_for_enter_key,
 )
 from onboarding import Onboarding
 from reports import ReportsMenu
@@ -77,6 +76,11 @@ class TerminalUI(UI):
         super().__init__(inputs, app)
 
         self.breadcrumbs = Breadcrumbs()
+
+    def wait_for_user_input(self, verb_phrase="to continue"):
+        """Pauses the terminal, i.e. waits for the user to press Enter before continuing"""
+        text = f"Press Enter {verb_phrase}..."
+        return input(color(text, Style.DIM))
 
     def show(self):
         """The entrypoint for the menu-based UI"""
