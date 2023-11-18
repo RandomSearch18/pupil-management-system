@@ -46,7 +46,8 @@ class UI:
         if not suppress_hints:
             # Let the user know how to give up entering their password
             print_hint("Tip: Try again or press Ctrl+C to cancel")
-        return self.authenticate_user(username, suppress_hints=True)
+
+        return self.user_authentication(username, suppress_hints=True)
 
     def log_in(self):
         target_username = self.inputs.text("Username: ", "Enter your username")
