@@ -48,37 +48,6 @@ def color(string: str, color: str) -> str:
     return f"{color}{string}{Style.RESET_ALL}"
 
 
-def get_selection(max: int) -> Optional[int]:
-    """Asks the user to pick a 1-indexed number up to (and including) `max`,
-    returing it as zero-indexed."""
-    try:
-        raw_input = input("Pick an option: ")
-    except KeyboardInterrupt:
-        print(color("Cancelled!", Fore.RED))
-        return None
-
-    if not raw_input.isnumeric():
-        error_incorrect_input("Your selection must be a positive number!")
-        return get_selection(max)
-
-    selection = int(raw_input)
-    if selection < 0:
-        error_incorrect_input("Select a positive number!")
-        return get_selection(max)
-    if selection > max:
-        error_incorrect_input(f"Selection out of bounds: Must be below {max+1}")
-        return get_selection(max)
-
-    # If they entered 0, we assume that they want to exit the selection
-    if selection == 0:
-        return None
-
-    # Subtract one from the selection, since the user is given options that are
-    # indexed from 1, but we want them to be zero-indexed
-    selection -= 1
-    return selection
-
-
 class MenuItem:
     def __init__(
         self,
@@ -209,6 +178,31 @@ class Submenu(MenuItem):
 
 
 class Menu:
+    def get_selection(self, max: int) -> Optional[int]:
+        """Asks the user to pick a 1-indexed number up to (and including) `max`,
+        returing it as zero-indexed."""
+        try:
+            selection = self.ui.inputs.integer("Pick an option: ")
+        except KeyboardInterrupt:
+            print(color("Cancelled!", Fore.RED))
+            return None
+
+        if selection < 0:
+            error_incorrect_input("Select a positive number!")
+            return self.get_selection(max)
+        if selection > max:
+            error_incorrect_input(f"Selection out of bounds: Must be below {max+1}")
+            return self.get_selection(max)
+
+        # If they entered 0, we assume that they want to exit the selection
+        if selection == 0:
+            return None
+
+        # Subtract one from the selection, since the user is given options that are
+        # indexed from 1, but we want them to be zero-indexed
+        selection -= 1
+        return selection
+
     def uses_descriptions(self) -> bool:
         """Returns True if any of the menu items have descriptions"""
         for item in self.options:
@@ -266,7 +260,7 @@ class Menu:
             print()
 
         # Ask the user to select a option number
-        selection = get_selection(len(relevant_options))
+        selection = self.get_selection(len(relevant_options))
 
         if selection is None:
             # Exit the menu if the user entered "0" (to cancel the selection)
