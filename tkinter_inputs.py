@@ -13,7 +13,7 @@ class TkinterInputs(Inputs):
     def get_next_free_row(self):
         return len(self.displayed_inputs)
 
-    def add_input_widget(self, prompt: str):
+    def add_input_widget(self, prompt: str, mask_characters=False):
         def submit():
             submit_button["state"] = DISABLED
             submitted_text.set(inputted_text.get())
@@ -25,8 +25,12 @@ class TkinterInputs(Inputs):
         label = Label(frame, text=prompt.strip())
         label.grid(column=0, row=0)
 
-        input_widget = Entry(frame, textvariable=inputted_text)
+        mask_characters_with = "*" if mask_characters else ""
+        input_widget = Entry(
+            frame, textvariable=inputted_text, show=mask_characters_with
+        )
         input_widget.grid(column=1, row=0, padx=5)
+        input_widget.focus()
 
         submit_button = Button(frame, text="Next", command=submit)
         submit_button.grid(column=3, row=0)
@@ -40,5 +44,15 @@ class TkinterInputs(Inputs):
     def question(self, prompt) -> str:
         submitted_text = self.add_input_widget(prompt)
         # self.window.mainloop()
+        self.window.wait_variable(submitted_text)
+        return submitted_text.get()
+
+    def password(
+        self,
+        prompt,
+        error_message="Enter a password to authenticate",
+        hide_characters=True,
+    ):
+        submitted_text = self.add_input_widget(prompt, hide_characters)
         self.window.wait_variable(submitted_text)
         return submitted_text.get()
