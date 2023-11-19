@@ -9,14 +9,16 @@ class TkinterUI(UI):
     """An experimental graphical user interface to the app"""
 
     def __init__(self, app: App) -> None:
-        inputs = TkinterInputs()
+        self.window = Tk()
+        inputs = TkinterInputs(self.window, self.window)
         super().__init__(inputs, app)
 
     def show(self):
-        self.window = Tk()
+        # self.window = Tk()
 
         # Use the Clam theme
         self.style = ttk.Style()
         self.style.theme_use("clam")
 
-        self.window.mainloop()
+        self.log_in()
+        # self.window.mainloop()
