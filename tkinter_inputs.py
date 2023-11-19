@@ -14,8 +14,9 @@ class TkinterInputs(Inputs):
         return len(self.displayed_inputs)
 
     def add_input_widget(self, prompt: str, mask_characters=False):
-        def submit():
+        def submit(event=None):
             submit_button["state"] = DISABLED
+            submit_button.unbind(key_sequence, enter_keybinding)
             submitted_text.set(inputted_text.get())
 
         inputted_text = StringVar()
@@ -29,6 +30,8 @@ class TkinterInputs(Inputs):
         input_widget = Entry(
             frame, textvariable=inputted_text, show=mask_characters_with
         )
+        key_sequence = "<Return>"
+        enter_keybinding = input_widget.bind(key_sequence, submit)
         input_widget.grid(column=1, row=0, padx=5)
         input_widget.focus()
 
