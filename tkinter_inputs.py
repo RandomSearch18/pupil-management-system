@@ -1,5 +1,5 @@
-from tkinter import IntVar, StringVar, Tk, Widget
-from tkinter.ttk import Entry, Frame, Label
+from tkinter import DISABLED, StringVar, Tk, Widget
+from tkinter.ttk import Button, Entry, Frame, Label
 from inputs import Inputs
 
 
@@ -13,22 +13,32 @@ class TkinterInputs(Inputs):
     def get_next_free_row(self):
         return len(self.displayed_inputs)
 
-    def add_input_widget(self, prompt: str, input_widget: Widget):
+    def add_input_widget(self, prompt: str):
+        def submit():
+            submit_button["state"] = DISABLED
+            submitted_text.set(inputted_text.get())
+
+        inputted_text = StringVar()
+        submitted_text = StringVar()
         frame = Frame(self.parent)
 
         label = Label(frame, text=prompt.strip())
         label.grid(column=0, row=0)
 
-        input_widget.master = frame
-        input_widget.grid(column=1, row=0)
+        input_widget = Entry(frame, textvariable=inputted_text)
+        input_widget.grid(column=1, row=0, padx=5)
+
+        submit_button = Button(frame, text="Next", command=submit)
+        submit_button.grid(column=3, row=0)
 
         frame_row = self.get_next_free_row()
-        frame.grid(row=frame_row)
+        frame.grid(row=frame_row, column=0)
         self.displayed_inputs.append(frame)
 
+        return submitted_text
+
     def question(self, prompt) -> str:
-        text = StringVar()
-        input_widget = Entry(textvariable=text)
-        self.add_input_widget(prompt, input_widget)
+        submitted_text = self.add_input_widget(prompt)
         # self.window.mainloop()
-        self.window.wait_variable(text)
+        self.window.wait_variable(submitted_text)
+        return submitted_text.get()

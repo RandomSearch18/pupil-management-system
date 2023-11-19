@@ -10,7 +10,9 @@ class TkinterUI(UI):
 
     def __init__(self, app: App) -> None:
         self.window = Tk()
-        inputs = TkinterInputs(self.window, self.window)
+        self.inputs_frame = ttk.Frame(padding=5)
+        self.inputs_frame.grid(column=0, row=0)
+        inputs = TkinterInputs(self.window, self.inputs_frame)
         super().__init__(inputs, app)
 
     def show(self):
