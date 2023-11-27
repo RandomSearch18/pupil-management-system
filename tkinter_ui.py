@@ -17,19 +17,26 @@ class TkinterUI(UI):
         super().__init__(inputs, app)
 
     def on_window_close(self):
-        self.window.destroy()
+        print("WINDOW CLOASE")
+        # self.window.destroy()
         # exit()
 
     def show(self):
         # self.window = Tk()
-        self.window.protocol("WM_DELETE_WINDOW", self.on_window_close)
+        # self.window.protocol("WM_DELETE_WINDOW", self.on_window_close)
 
         # Use the Clam theme
         self.style = ttk.Style()
         self.style.theme_use("clam")
 
-        self.log_in()
-        self.window.after(100, self.window.destroy)
+        # self.log_in()
+
+        ttk.Label(self.inputs_frame, text="Hello World!").grid(column=0, row=0)
+        ttk.Button(self.inputs_frame, text="Quit", command=self.window.destroy).grid(
+            column=1, row=0
+        )
+        self.window.mainloop()
+
         self.window.mainloop()
         # self.window.destroy()
         # self.window.mainloop()

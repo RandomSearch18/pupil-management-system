@@ -99,6 +99,7 @@ class InputRow:
             self.just_submitted = True
             self.submitted_text.set(self.inputted_text.get())
             self.deactivate()
+            # self.inputs.window.quit()
 
         self.submit_button.config(command=submit)
         self.keybinding_enter = self.input_entry.bind(self.key_sequence_enter, submit)

@@ -1,6 +1,7 @@
 """Mr Leeman's System: A pupil management system for Tree Road School
 This project is for Task 3 of the lesson 2.2.1 Programming fundamentals - validation"""
 import locale
+from threading import Thread
 
 from app import App
 from terminal_ui import TerminalUI
@@ -14,8 +15,14 @@ locale.setlocale(locale.LC_TIME, "")
 application = App()
 terminal_ui = TerminalUI(application)
 
-tkinter_ui = TkinterUI(application)
-tkinter_ui.show()
+
+def show_tkinter_ui():
+    tkinter_ui = TkinterUI(application)
+    tkinter_ui.show()
+
+
+tkinter_thread = Thread(target=show_tkinter_ui)
+tkinter_thread.start()
 
 # Execute the terminal UI
 terminal_ui.show()
